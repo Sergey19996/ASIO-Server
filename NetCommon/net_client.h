@@ -18,32 +18,29 @@ namespace olc {
 			~client_interface() {
 				Disconnect();
 			}
-			
+			// Connect to server with hostname/ip-address and port
 			bool Connect(const std::string& host, const uint16_t port) {
-				try {
-
-					//Create Connection
-					m_connection = std::make_unique<connection<T>>();  //TODO
-
-					//Resolve hostname/ip-adress into tangiable physical address
+				try
+				{
+					// Resolve hostname/ip-address into tangiable physical address
 					asio::ip::tcp::resolver resolver(m_context);
-					m_endpoints = resolver.resolve(host, std::to_string(port));
+					asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port));
 
-					//conect to server
-					m_connection->ConnectToServer(m_endpoints);
+					// Create connection
+					m_connection = std::make_unique<connection<T>>(connection<T>::owner::client, m_context, asio::ip::tcp::socket(m_context), M_qMessagesIn);
 
-					//Start thread
-					thrContext = std::thread([this]() {m_context.run(); });
+					// Tell the connection object to connect to server
+					m_connection->ConnectToServer(endpoints);
 
-
+					// Start Context Thread
+					thrContext = std::thread([this]() { m_context.run(); });
 				}
-				catch (std::exception& e) {
+				catch (std::exception& e)
+				{
 					std::cerr << "Client Exception: " << e.what() << "\n";
 					return false;
-
 				}
-
-				return false;
+				return true;
 			}
 			void Disconnect() {
 
@@ -70,7 +67,7 @@ namespace olc {
 
 			}
 			tsqueue<owned_message<T>>& Incoming() {
-				return m_qMessageIn;
+				return M_qMessagesIn;
 			}
 			void Send(const message<T>& msg)
 			{
@@ -85,7 +82,7 @@ namespace olc {
 			asio::ip::tcp::socket m_socket;
 
 			std::unique_ptr<connection<T>> m_connection;
-		
+			connection<T>* m_c;
 
 		private:
 		

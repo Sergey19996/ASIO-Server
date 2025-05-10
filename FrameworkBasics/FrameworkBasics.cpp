@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <chrono>
 #include <thread>
 #include <vector>
@@ -17,27 +17,27 @@ void GrabSomeData(asio::ip::tcp::socket& socket) {
 
 	socket.async_read_some(asio::buffer(vBuffer.data(), vBuffer.size()),
 		[&](std::error_code ec, std::size_t length) {
-		if (!ec) {
-			std::cout << "\n\nRead " << length << " bytes\n\n";
-			for (int i = 0; i < length; i++) {
-				std::cout << vBuffer[i];
+			if (!ec) {
+				std::cout << "\n\nRead " << length << " bytes\n\n";
+				for (int i = 0; i < length; i++) {
+					std::cout << vBuffer[i];
+				}
+
+				GrabSomeData(socket);
+
+
 			}
-
-			GrabSomeData(socket);
-
-
-		}
-		else if (ec == asio::error::eof) {
-			std::cout << "\n\nConnection closed by server\n";
-		}
-		else {
-			std::cout << "Error on receive: " << ec.message() << std::endl;
-		}
+			else if (ec == asio::error::eof) {
+				std::cout << "\n\nConnection closed by server\n";
+			}
+			else {
+				std::cout << "Error on receive: " << ec.message() << std::endl;
+			}
 
 
 		});
 
-	
+
 
 }
 
@@ -54,7 +54,7 @@ int main() {
 
 
 	//Start the context
-	std::thread thrContext = std::thread([&]() {context.run(); });  // â îòäåëíüîì ïîòîêå 
+	std::thread thrContext = std::thread([&]() {context.run(); });  // Ã¢ Ã®Ã²Ã¤Ã¥Ã«Ã­Ã¼Ã®Ã¬ Ã¯Ã®Ã²Ã®ÃªÃ¥ 
 
 	//get adress of website 
 	asio::ip::tcp::endpoint endpoint(asio::ip::make_address("51.38.81.49", ec), 80);
@@ -93,7 +93,7 @@ int main() {
 		//
 		//workGuard.reset();
 		///
-	
+
 	}
 
 	system("pause");
