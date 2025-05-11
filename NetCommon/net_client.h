@@ -22,12 +22,19 @@ namespace olc {
 			bool Connect(const std::string& host, const uint16_t port) {
 				try
 				{
+					
+
 					// Resolve hostname/ip-address into tangiable physical address
 					asio::ip::tcp::resolver resolver(m_context);
-					asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port));
+					asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port)); //получает любой доступный  сервер по домену 
+
+
 
 					// Create connection
-					m_connection = std::make_unique<connection<T>>(connection<T>::owner::client, m_context, asio::ip::tcp::socket(m_context), M_qMessagesIn);
+					m_connection = std::make_unique<connection<T>>(connection<T>::owner::client
+						, m_context,
+						asio::ip::tcp::socket(m_context),
+						m_qMessagesIn);
 
 					// Tell the connection object to connect to server
 					m_connection->ConnectToServer(endpoints);
@@ -67,7 +74,7 @@ namespace olc {
 
 			}
 			tsqueue<owned_message<T>>& Incoming() {
-				return M_qMessagesIn;
+				return m_qMessagesIn;
 			}
 			void Send(const message<T>& msg)
 			{
@@ -86,7 +93,7 @@ namespace olc {
 
 		private:
 		
-			tsqueue<owned_message<T>> M_qMessagesIn;
+			tsqueue<owned_message<T>> m_qMessagesIn;
 
 
 

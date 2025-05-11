@@ -17,16 +17,40 @@ public:
 
 protected:
 
-	virtual bool OnClientConnected(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
+	virtual bool OnClientConnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::ServerAccept;
+		client->Send(msg);
 		return true;
 	}
 	//when client appeares
-	virtual void OnClientDisconnected(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client) {
-
+	virtual void OnClientDisconnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
+		std::cout << "Removing client [" << client->GetID() << "]\n";
 	}
 	//called when message arrives
-	virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>>client, std::shared_ptr<olc::net::connection<CustomMsgTypes>>server) {
+	virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes>& msg) {
+		switch (msg.header.id) {
 
+		case CustomMsgTypes::ServerPing:
+		{
+			std::cout << "[" << client->GetID() << "]: Server Ping\n";
+
+			client->Send(msg);
+		}
+		break;
+
+		case CustomMsgTypes::MessageAll:
+		{
+			std::cout << "[" << client->GetID() << "]: Message All\n";
+			olc::net::message<CustomMsgTypes>msg;
+			msg.header.id = CustomMsgTypes::ServerMessage; 
+			msg << client->GetID();
+			MessageAllClients(msg, client);
+		}
+		break;
+
+		}
+	
 	}
 };
 

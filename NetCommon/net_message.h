@@ -24,11 +24,11 @@ namespace olc {
 
 			//Return size message in bytes
 			size_t size() const {
-				return sizeof(message_header<T>) + body.size();
+				return body.size();
 			}
 
 			//override for std::cout compatibility - produces friendly description of message 
-			friend std::ofstream& operator << (std::ostream& os, const message<T>& msg) {
+			friend std::ostream& operator << (std::ostream& os, const message<T>& msg) {
 
 				os << "ID: " << int(msg.header.id) << " Size:" << msg.header.size;
 				return os;

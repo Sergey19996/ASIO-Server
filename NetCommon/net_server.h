@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "net_common.h"
 #include "net_tsqueue.h"
@@ -16,7 +16,7 @@ namespace olc {
 		class server_interface {
 		public:
 			server_interface(uint16_t port)
-				:m_asioAccepter(m_asioContext,asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))  // создаёт сокет начинает слушать связывает с endpoint
+				:m_asioAccepter(m_asioContext,asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))  // СЃРѕР·РґР°С‘С‚ СЃРѕРєРµС‚ СѓРєР°Р·С‹РІР°РµС‚ С‡С‚Рѕ v4(СЃС‚Р°РЅРґР°СЂС‚ РїРѕРєР° РµС‰С‘ )
 			{
 
 			}
@@ -30,7 +30,7 @@ namespace olc {
 				{
 					WaitForClientConnection();
 
-					m_threadContext = std::thread([this]() {m_asioContext.run(); });  // это главный "движок" следит за событиями на сокетах, обрабатывает таймеры, вызывает колбэки (handlers
+					m_threadContext = std::thread([this]() {m_asioContext.run(); });  // СЌС‚Рѕ РіР»Р°РІРЅС‹Р№ "РґРІРёР¶РѕРє" СЃР»РµРґРёС‚ Р·Р° СЃРѕР±С‹С‚РёСЏРјРё РЅР° СЃРѕРєРµС‚Р°С…, РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ С‚Р°Р№РјРµСЂС‹, РІС‹Р·С‹РІР°РµС‚ РєРѕР»Р±СЌРєРё (handlers
 
 				}
 				catch (const std::exception& e)
@@ -45,7 +45,14 @@ namespace olc {
 
 			void Stop() {
 
+				// Request the context to close
 				m_asioContext.stop();
+
+				// Tidy up the context thread
+				if (m_threadContext.joinable()) m_threadContext.join();
+
+				// Inform someone, anybody, if they care...
+				std::cout << "[SERVER] Stopped!\n";
 			}
 
 			//ASYNC -Instruct asio to wait for connection
@@ -60,7 +67,7 @@ namespace olc {
 							 std::make_shared<connection<T>>(connection<T>::owner::server,
 								m_asioContext, std::move(Socket), m_qMessagesIn);
 
-							Give the user server chance to deny connection
+							//Give the user server chance to deny connection
 							if (OnClientConnect(newconn)) {
 
 								//Connection allowed, so add to container of new connections
@@ -99,7 +106,8 @@ namespace olc {
 				{
 					OnClientDisconnect(client);
 					client.reset();
-					m_deqConnections.erase(std::remove(m_deqConnections.begin(), m_deqConnections.end(), client), m_deqConnections.end());
+					m_deqConnections.erase(
+						std::remove(m_deqConnections.begin(), m_deqConnections.end(), client), m_deqConnections.end());
 				}
 
 			}
@@ -120,7 +128,7 @@ namespace olc {
 					{
 						//The client couldnot be contacted, so assume it 
 						//has disconnected
-						OnClientConnect(client);
+						OnClientDisconnect(client); // вњ” РїСЂР°РІРёР»СЊРЅРѕ
 						client.reset();
 						bInvalidClientExists = true;
 					}
@@ -144,20 +152,27 @@ namespace olc {
 
 		protected:
 
-			//Called when a client connects, you can veto the connection by returning false
-			virtual bool OnClientConnect(std::shared_ptr<connection<T>> client) {
+			// This server class should override thse functions to implement
+			// customised functionality
 
+			// Called when a client connects, you can veto the connection by returning false
+			virtual bool OnClientConnect(std::shared_ptr<connection<T>> client)
+			{
 				return false;
 			}
 
-			//Called when client appears to have disconnected
-			virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client) {
+			// Called when a client appears to have disconnected
+			virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client)
+			{
 
 			}
-			//Called when a message arrives
-			virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T>& msg) {
 
+			// Called when a message arrives
+			virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T>& msg)
+			{
+				
 			}
+
 
 
 		protected:

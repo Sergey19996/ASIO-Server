@@ -2,49 +2,116 @@
 #include <olc_net.h>
 
 enum class CustomMsgTypes : uint32_t {
-	FireBullet,
-	MovePlayer
+	ServerAccept,
+	ServerDeny,
+	ServerPing,
+	MessageAll,
+	ServerMessage
 
 };
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes>
 {
 public:
-	bool FireBullet(float x, float y)
-	{
+	void PingServer() {
 		olc::net::message<CustomMsgTypes> msg;
-		msg.header.id = CustomMsgTypes::FireBullet;
-		msg << x << y;
+		msg.header.id = CustomMsgTypes::ServerPing;  // id == T
+
+		// Caution with this...
+		std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+
+		msg << timeNow;
 		Send(msg);
+
+	}
+	void MessageAll() {
+
+		olc::net::message<CustomMsgTypes> msg;
+		msg.header.id = CustomMsgTypes::MessageAll;
+		Send(msg);
+
 	}
 };
 
 int main() {
 	CustomClient c;
-	c.Connect("community.onelonecider.com", 60000);
-	c.FireBullet(2.0f, 5.0f);
+	c.Connect("127.0.0.1", 60000);
 
-	//olc::net::message<CustomMsgTypes> msg;
-	//msg.header.id = CustomMsgTypes::FireBullet;  // enum int (0)
+	bool key[3] = { false,false,false };
+	bool old_key[3] = { false,false,false };
 
-	//int a = 1;
-	//bool b = true;
-	//float c = 3.14159f;
 
-	//struct
-	//{
-	//	float x;
-	//	float y;
+	bool bQuit = false;
+	while (!bQuit)
+	{
+		if (GetForegroundWindow() == GetConsoleWindow())
+		{
+			key[0] = GetAsyncKeyState('1') & 0x8000;
+			key[1] = GetAsyncKeyState('2') & 0x8000;
+			key[2] = GetAsyncKeyState('3') & 0x8000;
+		}
 
-	//}d[5];
+		if (key[0] && !old_key[0]) c.PingServer();
+		if (key[1] && !old_key[1]) c.MessageAll();
+		if (key[2] && !old_key[2]) bQuit = true;
 
-	//msg << a << b << c << d;
+		for (int i = 0; i < 3; i++) old_key[i] = key[i];
 
-	//a = 99;
-	//b = false;
-	//c = 99.0f;
+		if (c.IsConnected())
+		{
+			if (!c.Incoming().empty())   // incoming - очередь просто 
+			{
 
-	//msg >> d >> c >> b >> a;
+
+				auto msg = c.Incoming().pop_front().msg;
+
+		
+
+				switch (msg.header.id) {
+
+
+				case CustomMsgTypes::ServerAccept:
+				{
+
+					//Server has responded to a ping request
+					std::cout << "Server Accepted Connection\n";
+					
+				}
+				break;
+				case CustomMsgTypes::ServerPing:
+				{
+					// Server has responded to a ping request
+					std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+					std::chrono::system_clock::time_point timeThen;
+					msg >> timeThen;
+					std::cout << "Ping: " <<std::chrono::duration<double>(timeNow-timeThen).count() << "\n";
+				}
+				break;
+				case CustomMsgTypes::ServerMessage:
+				{
+					//Server has responded to a ping request
+					uint32_t clientID;
+					msg >> clientID;
+					std::cout << " Hello from [" << clientID << "]\n";
+
+
+				}
+				break;
+
+				}
+				
+
+
+			}
+		}
+		else
+		{
+			std::cout << "Server Down\n";
+			bQuit = true;
+		}
+
+
+	}
 
 
 
