@@ -18,17 +18,17 @@ public:
 protected:
 
 	virtual bool OnClientConnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
-		olc::net::message<CustomMsgTypes> msg;
-		msg.header.id = CustomMsgTypes::ServerAccept;
-		client->Send(msg);
-		return true;
+		olc::net::message<CustomMsgTypes> msg;  //создаётся пустое сообщение
+		msg.header.id = CustomMsgTypes::ServerAccept; //в id присваиваем Accept
+		client->Send(msg);  // отправляем клиенту 
+		return true;  //клиент принят
 	}
 	//when client appeares
 	virtual void OnClientDisconnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
 		std::cout << "Removing client [" << client->GetID() << "]\n";
 	}
 	//called when message arrives
-	virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes>& msg) {
+	virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes>& msg) { //тут client это тот кто отправил и его msg
 		switch (msg.header.id) {
 
 		case CustomMsgTypes::ServerPing:
@@ -59,7 +59,7 @@ int main() {
 	server.Start();
 	while (1)
 	{
-		server.Update();
+		server.Update(-1,true);
 	}
 	return 0;
 

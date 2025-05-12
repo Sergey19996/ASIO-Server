@@ -28,7 +28,7 @@ namespace olc {
 			bool Start() {
 				try
 				{
-					WaitForClientConnection();
+					WaitForClientConnection();  //начинает асинхронный прием сообщений
 
 					m_threadContext = std::thread([this]() {m_asioContext.run(); });  // это главный "движок" следит за событиями на сокетах, обрабатывает таймеры, вызывает колбэки (handlers
 
@@ -57,23 +57,26 @@ namespace olc {
 
 			//ASYNC -Instruct asio to wait for connection
 			void WaitForClientConnection() {
+				// Prime context with an instruction to wait until a socket connects. This
+				// is the purpose of an "acceptor" object. It will provide a unique socket
+				// for each incoming connection attempt
 				m_asioAccepter.async_accept(
 					[this](std::error_code ec, asio::ip::tcp::socket Socket) {
 						if (!ec)
 						{
-							std::cout << "[SERVER] new Connection: " << Socket.remote_endpoint() << "\n";  // socket get ip idress of client 
+							std::cout << "[SERVER] new Connection: " << Socket.remote_endpoint() << "\n"; 
 
-							std::shared_ptr<connection<T>> newconn =
+							std::shared_ptr<connection<T>> newconn =      // cоздайтся коннект с сообщением от клиента там же и генерируется valid переменная для shakehands
 							 std::make_shared<connection<T>>(connection<T>::owner::server,
 								m_asioContext, std::move(Socket), m_qMessagesIn);
 
 							//Give the user server chance to deny connection
-							if (OnClientConnect(newconn)) {
+							if (OnClientConnect(newconn)) {  // cервер отправляет сообщение ServerAccept клиенту 
 
 								//Connection allowed, so add to container of new connections
-								m_deqConnections.push_back(std::move(newconn));
+								m_deqConnections.push_back(std::move(newconn));  
 
-								m_deqConnections.back()->ConnectToClient(nIDCounter++);
+								m_deqConnections.back()->ConnectToClient(this, nIDCounter++);  // тут мы присваиваем id клиенту и начинаем  запускать проверку (handshake)
 
 								std::cout << "[" << m_deqConnections.back()->GetID() << "] Connection Approved\n";
 
@@ -138,7 +141,10 @@ namespace olc {
 
 			}
 
-			void Update(size_t nMaxMessages = -1) {
+			void Update(size_t nMaxMessages = -1,bool bWait = false) {
+
+				//For not occupy 100% of a CPU cpre
+				if (bWait) m_qMessagesIn.wait();  //дальше не пойдем если в  m_qMessagesIn ничего нет
 
 				size_t nMessageCount = 0;
 				while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty()) {
@@ -173,6 +179,11 @@ namespace olc {
 				
 			}
 
+			public:
+				//Called when a client is validated
+				virtual void OnClientValidated(std::shared_ptr<connection<T>> client) {
+
+				}
 
 
 		protected:

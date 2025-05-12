@@ -34,6 +34,10 @@
 					std::scoped_lock lock(muxQueue);
 					deqQueue.emplace_back(item);
 
+					std::unique_lock<std::mutex> u1(muxBlocking);
+					cvBlocking.notify_one();
+
+
 				}
 
 				void push_front(const T& item) {
@@ -41,6 +45,8 @@
 					std::scoped_lock lock(muxQueue);
 					deqQueue.emplace_front(std::move(item));
 
+					std::unique_lock<std::mutex> u1(muxBlocking);
+					cvBlocking.notify_one();
 				}
 
 				bool empty() {
@@ -56,6 +62,15 @@
 				void Clear() {
 					std::scoped_lock lock(muxQueue);
 					deqQueue.clear();
+
+				}
+
+				void wait() {
+					while (empty()) //push back / push front пробудят поток
+					{
+						std::unique_lock<std::mutex> u1(muxBlocking);
+						cvBlocking.wait(u1);
+					};
 
 				}
 
@@ -81,7 +96,8 @@
 				std::mutex muxQueue;  //for stoping thread
 				std::deque<T> deqQueue; // core of class 
 
-
+				std::condition_variable cvBlocking;
+				std::mutex muxBlocking;
 			};
 
 		}

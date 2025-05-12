@@ -31,7 +31,7 @@ namespace olc {
 
 
 					// Create connection
-					m_connection = std::make_unique<connection<T>>(connection<T>::owner::client
+					m_connection = std::make_unique<connection<T>>(connection<T>::owner::client  // зануляет hanshake data
 						, m_context,
 						asio::ip::tcp::socket(m_context),
 						m_qMessagesIn);
