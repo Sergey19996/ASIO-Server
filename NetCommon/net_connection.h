@@ -61,6 +61,7 @@ namespace olc {
 
 			}
 
+		
 			void ConnectToClient(olc::net::server_interface<T>* server,uint32_t uid = 0) {
 
 				if (m_nOwnerType == owner::server) {

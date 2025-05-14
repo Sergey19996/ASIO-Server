@@ -35,25 +35,53 @@ namespace olc {
 			}
 			// PUSH data into the message
 			template<typename DataType>
-			friend message<T>& operator << (message<T>& msg, const DataType& data)
+			friend message<T>& operator << (message<T>& msg, const DataType& data)    // msg << data 
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
-				size_t i = msg.body.size();
-				msg.body.resize(msg.body.size() + sizeof(DataType));
-				std::memcpy(msg.body.data() + i, &data, sizeof(DataType));
+				size_t i = msg.body.size(); //фиксирует ширину предидущей записи что бы не потерять предидущие данные 
+				msg.body.resize(msg.body.size() + sizeof(DataType));  // увеличиваем размер body 
+				std::memcpy(msg.body.data() + i, &data, sizeof(DataType)); // копируем с заранее подгатовленным оффсетом 
 				msg.header.size = msg.size();
 				return msg;
 			}
 
+			//String supprot
+			friend message<T>& operator << (message<T>& msg, const std::string& data)
+			{
+				msg.body.insert(msg.body.end(), data.begin(), data.end()); // сначала символы пишутся в конуц
+				uint32_t size = data.size();
+				msg << size; // потом размер
+				msg.header.size = msg.size();
+				return msg;
+			}
+			//String supprot
+			friend message<T>& operator >> (message<T>& msg, std::string& data)
+			{
+				uint32_t size = 0;
+				msg >> size; // читаем размер строки
+
+				// Проверка: достаточно ли данных
+				if (msg.body.size() < size) throw std::runtime_error("Message too short for string");
+
+				// Читаем строку с конца
+				data.resize(size);
+				std::memcpy(&data[0], msg.body.data() + msg.body.size() - size, size);
+				msg.body.resize(msg.body.size() - size);
+
+				msg.header.size = msg.size();
+				return msg;
+			}
+			
+			// 
 			// PULL data from the message
 			template<typename DataType>
 			friend message<T>& operator >> (message<T>& msg, DataType& data) 
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
-				size_t i = msg.body.size() - sizeof(DataType);
-				std::memcpy(&data, msg.body.data() + i, sizeof(DataType));
-				msg.body.resize(i);
-				msg.header.size = msg.size();
+				size_t i = msg.body.size() - sizeof(DataType); // так мы понимаем сколько данных в переменной в которую пишем мы отнимаум её вес от общего
+				std::memcpy(&data, msg.body.data() + i, sizeof(DataType)); // полученную разнсоть используем как оффсет для записи в эту Data из body
+				msg.body.resize(i); // уменьшаем место  в body
+				msg.header.size = msg.size(); // и в header 
 				return msg;
 			}
 

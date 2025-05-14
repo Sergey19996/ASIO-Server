@@ -5,7 +5,8 @@ enum class CustomMsgTypes : uint32_t {
 	ServerDeny,
 	ServerPing,
 	MessageAll,
-	ServerMessage
+	ServerMessage,
+	Message
 
 };
 
@@ -48,7 +49,41 @@ protected:
 			MessageAllClients(msg, client);
 		}
 		break;
+		case CustomMsgTypes::Message: //что ты положишь в конец body, то получатель вытащит первым.
+		{
 
+			//чтение текста для string
+			std::string received;
+			uint32_t len = 0;
+			msg >> len;
+
+			received.resize(len);
+			//for (int i = len - 1; i >= 0; --i)
+			//	msg >> received[i];
+
+			msg >> received;
+
+			//Подготовка нового сообщения
+			olc::net::message<CustomMsgTypes> forwardMsg;
+			forwardMsg.header.id = CustomMsgTypes::Message;
+
+			// Сначала пишем строку (в обратном порядке)
+		//	for (auto it = received.rbegin(); it != received.rend(); ++it)
+		//		forwardMsg << *it;
+
+			forwardMsg << received;
+			// Затем размер строки
+			forwardMsg << len;
+
+			// Затем ID клиента
+			forwardMsg << client->GetID();
+
+			// Обновим размер
+			//forwardMsg.header.size = forwardMsg.size();
+
+			MessageAllClients(forwardMsg, client);
+		}
+		break;
 		}
 	
 	}
