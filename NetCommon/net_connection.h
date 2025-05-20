@@ -74,12 +74,13 @@ namespace olc {
 						// A client has attempted to connect to the server, but we wish
 						//the client to first validate itself, so first write out the 
 						//handshake data to be validated 
+						
 						WriteValidation();  // отправляем клиенту  
-
+						
 						//Next, issue a task to sit and wait asynchonously for precisely
 						//the validation data sent back from the client
 						ReadValidation(server); // проверяем 
-
+					
 
 					}
 
@@ -102,6 +103,7 @@ namespace olc {
 
 								//First thing sesrver will do is send packet to be validated
 								//o wait for thet and respond
+							
 								ReadValidation();
 
 
@@ -130,7 +132,7 @@ namespace olc {
 						m_qMessagesOut.push_back(msg);  //cообщение добовляем в очередь 
 						if (!bWritingMessage) { // если очередь была пуста 
 							WriteHeader();  // начало цепочки async_write, которая сначала отправляет заголовок, потом тело сообщения.
-
+							
 						}
 					});
 					
@@ -148,7 +150,7 @@ namespace olc {
 					{
 						if (!ec)
 						{
-						
+							
 							if (m_msgTemporaryIn.header.size > 0)  // если чтение прошло успешно  и место для тела есть 
 							{
 								m_msgTemporaryIn.body.resize(m_msgTemporaryIn.header.size); //корректируем размер тела 
@@ -156,6 +158,7 @@ namespace olc {
 							}
 							else
 							{
+							
 								AddToIncomingMessageQueue();
 							}
 						}
@@ -171,6 +174,7 @@ namespace olc {
 				asio::async_read(m_socket, asio::buffer(m_msgTemporaryIn.body.data(), m_msgTemporaryIn.body.size()), // во временный указатель пишем тело
 					[this](std::error_code ec, std::size_t length) {
 						if (!ec) {
+						
 							AddToIncomingMessageQueue();
 						}
 						else
@@ -189,6 +193,7 @@ namespace olc {
 						{
 							if (m_qMessagesOut.front().body.size() > 0)  // если тело вообще есть
 							{
+							
 								WriteBody();  // если у сообщения есть тело — отправим его
 							}
 							else
@@ -196,6 +201,7 @@ namespace olc {
 								m_qMessagesOut.pop_front(); // иначе удалим сообщение из очереди;
 								if (!m_qMessagesOut.empty())
 								{
+								
 									WriteHeader();  // и начнём отправку следующего
 								}
 							}
@@ -214,7 +220,7 @@ namespace olc {
 
 
 							if (!m_qMessagesOut.empty()) {  // если всё ещё не пустая
-								 
+							
 								WriteHeader();  // отправляем писать header
 
 							}
@@ -290,7 +296,7 @@ namespace olc {
 									std::cout << "Client Validated" << std::endl;
 									server->OnClientValidated(this->shared_from_this());
 
-
+									
 									//Sit waiting to receive data now
 									ReadHeader();
 
@@ -307,6 +313,7 @@ namespace olc {
 							{
 								//Connection is a client, so solve puzzle
 								m_nHandShakeOut = scramble(m_nHandShakeIn);
+
 
 								//Write the result
 								WriteValidation();  // отправялет m_nHandShakeOut

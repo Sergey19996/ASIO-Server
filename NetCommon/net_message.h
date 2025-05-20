@@ -48,9 +48,13 @@ namespace olc {
 			//String supprot
 			friend message<T>& operator << (message<T>& msg, const std::string& data)
 			{
-				msg.body.insert(msg.body.end(), data.begin(), data.end()); // сначала символы пишутся в конуц
+				// Сначала записываем строку (символы)
+				msg.body.insert(msg.body.end(), data.begin(), data.end());
+
+				// Затем размер строки — в конец, чтобы потом первым считался при чтении
 				uint32_t size = data.size();
-				msg << size; // потом размер
+				msg << size;
+
 				msg.header.size = msg.size();
 				return msg;
 			}
@@ -75,7 +79,7 @@ namespace olc {
 			// 
 			// PULL data from the message
 			template<typename DataType>
-			friend message<T>& operator >> (message<T>& msg, DataType& data) 
+			friend message<T>& operator >> (message<T>& msg, DataType& data)  // msg >> data
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
 				size_t i = msg.body.size() - sizeof(DataType); // так мы понимаем сколько данных в переменной в которую пишем мы отнимаум её вес от общего

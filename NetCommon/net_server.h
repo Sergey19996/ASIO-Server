@@ -116,28 +116,35 @@ namespace olc {
 			}
 			//Send message to all clients
 			void MessageAllClients(const message<T>& msg,std::shared_ptr<connection<T>>pIgnoreClient = nullptr){
-
 				bool bInvalidClientExists = false;
 
-				for (auto& client : m_deqConnections) {
-
-					if (client && client->IsConnected()) {
-
+				// Iterate through all clients in container
+				for (auto& client : m_deqConnections)
+				{
+					// Check client is connected...
+					if (client && client->IsConnected())
+					{
+						// ..it is!
 						if (client != pIgnoreClient)
 							client->Send(msg);
-
 					}
 					else
 					{
-						//The client couldnot be contacted, so assume it 
-						//has disconnected
-						OnClientDisconnect(client); // ✔ правильно
+						// The client couldnt be contacted, so assume it has
+						// disconnected.
+						OnClientDisconnect(client);
 						client.reset();
+
+						// Set this flag to then remove dead clients from container
 						bInvalidClientExists = true;
 					}
 				}
-				if(bInvalidClientExists)
-					m_deqConnections.erase(std::remove(m_deqConnections.begin(), m_deqConnections.end(), nullptr), m_deqConnections.end());
+
+				// Remove dead clients, all in one go - this way, we dont invalidate the
+				// container as we iterated through it.
+				if (bInvalidClientExists)
+					m_deqConnections.erase(
+						std::remove(m_deqConnections.begin(), m_deqConnections.end(), nullptr), m_deqConnections.end());
 
 			}
 

@@ -1,101 +1,130 @@
 #include <olc_net.h>
+#include <unordered_map>
 
-enum class CustomMsgTypes : uint32_t {
-	ServerAccept,
-	ServerDeny,
-	ServerPing,
-	MessageAll,
-	ServerMessage,
-	Message
 
-};
 
-class CustomServer : public olc::net::server_interface<CustomMsgTypes>{
+class GameServer : public olc::net::server_interface<GameMsg>
+{
 public:
-	CustomServer(uint16_t nPort) : olc::net::server_interface<CustomMsgTypes>(nPort) {
-
+	GameServer(uint16_t nPort) : olc::net::server_interface<GameMsg>(nPort)
+	{
 	}
+
+	std::unordered_map<uint32_t, sPlayerDescription> m_mapPlayerRoster;
+	std::vector<uint32_t> m_vGarbageIDs;
 
 protected:
-
-	virtual bool OnClientConnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
-		olc::net::message<CustomMsgTypes> msg;  //создаётся пустое сообщение
-		msg.header.id = CustomMsgTypes::ServerAccept; //в id присваиваем Accept
-		client->Send(msg);  // отправляем клиенту 
-		return true;  //клиент принят
+	bool OnClientConnect(std::shared_ptr<olc::net::connection<GameMsg>> client) override
+	{
+		// For now we will allow all 
+		return true;
 	}
-	//when client appeares
-	virtual void OnClientDisconnect(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client)  {
-		std::cout << "Removing client [" << client->GetID() << "]\n";
-	}
-	//called when message arrives
-	virtual void OnMessage(std::shared_ptr<olc::net::connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes>& msg) { //тут client это тот кто отправил и его msg
-		switch (msg.header.id) {
 
-		case CustomMsgTypes::ServerPing:
+	void OnClientValidated(std::shared_ptr<olc::net::connection<GameMsg>> client) override
+	{
+		// Client passed validation check, so send them a message informing
+		// them they can continue to communicate
+		olc::net::message<GameMsg> msg;
+		msg.header.id = GameMsg::Client_Accepted;
+		client->Send(msg);
+	}
+
+	void OnClientDisconnect(std::shared_ptr<olc::net::connection<GameMsg>> client) override
+	{
+		if (client)
 		{
-			std::cout << "[" << client->GetID() << "]: Server Ping\n";
-
-			client->Send(msg);
+			if (m_mapPlayerRoster.find(client->GetID()) == m_mapPlayerRoster.end())
+			{
+				// client never added to roster, so just let it disappear
+			}
+			else
+			{
+				auto& pd = m_mapPlayerRoster[client->GetID()];
+				std::cout << "[UNGRACEFUL REMOVAL]:" + std::to_string(pd.nUniqueID) + "\n";
+				m_mapPlayerRoster.erase(client->GetID());
+				m_vGarbageIDs.push_back(client->GetID());
+			}
 		}
-		break;
 
-		case CustomMsgTypes::MessageAll:
+	}
+
+	void OnMessage(std::shared_ptr<olc::net::connection<GameMsg>> client, olc::net::message<GameMsg>& msg) override
+	{
+		if (!m_vGarbageIDs.empty())
 		{
-			std::cout << "[" << client->GetID() << "]: Message All\n";
-			olc::net::message<CustomMsgTypes>msg;
-			msg.header.id = CustomMsgTypes::ServerMessage; 
-			msg << client->GetID();
+			for (auto pid : m_vGarbageIDs)
+			{
+				olc::net::message<GameMsg> m;
+				m.header.id = GameMsg::Game_RemovePlayer;
+				m << pid;
+				std::cout << "Removing " << pid << "\n";
+				MessageAllClients(m);
+			}
+			m_vGarbageIDs.clear();
+		}
+
+
+
+		switch (msg.header.id)
+		{
+		case GameMsg::Client_RegisterWithServer:
+		{
+			sPlayerDescription desc;
+			msg >> desc;
+			desc.nUniqueID = client->GetID();
+			m_mapPlayerRoster.insert_or_assign(desc.nUniqueID, desc);
+
+			olc::net::message<GameMsg> msgSendID;
+			msgSendID.header.id = GameMsg::Client_AssignID;
+			msgSendID << desc.nUniqueID;
+			MessageClient(client, msgSendID);
+
+			olc::net::message<GameMsg> msgAddPlayer;
+			msgAddPlayer.header.id = GameMsg::Game_AddPlayer;
+			msgAddPlayer << desc;
+			MessageAllClients(msgAddPlayer);
+
+			for (const auto& player : m_mapPlayerRoster)
+			{
+				olc::net::message<GameMsg> msgAddOtherPlayers;
+				msgAddOtherPlayers.header.id = GameMsg::Game_AddPlayer;
+				msgAddOtherPlayers << player.second;
+				MessageClient(client, msgAddOtherPlayers);
+			}
+
+			break;
+		}
+
+		case GameMsg::Client_UnregisterWithServer:
+		{
+			break;
+		}
+
+		case GameMsg::Game_UpdatePlayer:
+		{
+		
+			// Simply bounce update to everyone except incoming client
 			MessageAllClients(msg, client);
+		
+			break;
 		}
-		break;
-		case CustomMsgTypes::Message: //что ты положишь в конец body, то получатель вытащит первым.
-		{
 
-			//чтение текста для string
-			std::string received;
-			uint32_t len = 0;
-			msg >> len;
-
-			received.resize(len);
-			//for (int i = len - 1; i >= 0; --i)
-			//	msg >> received[i];
-
-			msg >> received;
-
-			//Подготовка нового сообщения
-			olc::net::message<CustomMsgTypes> forwardMsg;
-			forwardMsg.header.id = CustomMsgTypes::Message;
-
-			// Сначала пишем строку (в обратном порядке)
-		//	for (auto it = received.rbegin(); it != received.rend(); ++it)
-		//		forwardMsg << *it;
-
-			forwardMsg << received;
-			// Затем размер строки
-			forwardMsg << len;
-
-			// Затем ID клиента
-			forwardMsg << client->GetID();
-
-			// Обновим размер
-			//forwardMsg.header.size = forwardMsg.size();
-
-			MessageAllClients(forwardMsg, client);
 		}
-		break;
-		}
-	
+
 	}
+
 };
 
-int main() {
-	CustomServer server(60000);
+
+
+int main()
+{
+	GameServer server(60000);
 	server.Start();
+
 	while (1)
 	{
-		server.Update(-1,true);
+		server.Update(-1, true);
 	}
 	return 0;
-
 }
