@@ -2,7 +2,7 @@
 
 This repository contains my learning projects focused on mastering **asynchronous networking using standalone ASIO (without Boost)** and **basic graphics rendering with OpenGL/GLSL**. The goal is to build a reliable, modular client-server foundation in modern C++ and learn how to integrate low-level graphics and user input.
 
----
+--- https://youtu.be/VJgBPuF-EsY -- YOUTUBE RESUTL
 
 ## 🔧 Features Implemented
 
