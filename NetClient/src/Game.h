@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <unordered_map>
-
+#include "GameStates.hpp"
 // Represents the four possible (collision) directions
 enum Direction {
 	UP,
@@ -20,6 +20,9 @@ enum Direction {
 class Game : public olc::net::client_interface<GameMsg> {
 public:
 	static std::vector<void(*)(GLFWwindow* windiw, int key, int scancode, int action, int mods)>keyCallbacks;
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int modes);
+	static void character_callback(GLFWwindow* window, unsigned int codepoint);
+
 
 	unsigned int Width, Height;
 
@@ -31,14 +34,21 @@ public:
 
 	void Update(float dt);
 	void Render();
-	void sceneEvent();
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int modes);
+	void keyEvents();
+	
+	
 	void renderObject();
 	void updateObjects(float felapsedTIme);
 	void ProcessInput(float dt);
 
 	Direction VectorDirection(glm::vec2 target); // <collision?, what direction?, difference vector center - closest point>
 	bool checkCollision(sPlayerDescription& player,glm::vec2& boxpos);
+
+	GameState& GetState() { return state; };
+	void SetState(GameState State) { state = State; };
+	void PrepareChatInput();
+	void ReleaseChatInput();
+	void delete_Char();
 
 private:
 	static bool Keys[];
@@ -48,7 +58,12 @@ private:
 	bool bWaitingForConnection = true;
 
 	std::unordered_map<uint32_t, sPlayerDescription> mapObjects;
+	std::deque<sChatMessage> chatMessages;
+
 	uint32_t nPlayerID = 0;
+
+	static std::string chatMessage;
+	static GameState state;
 
 };
 

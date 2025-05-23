@@ -12,11 +12,16 @@ const unsigned int TEXTSIZE = 12;
 
 
 std::vector<void(*)(GLFWwindow* windiw, int key, int scancode, int action, int mods)>Game::keyCallbacks;
+std::string Game::chatMessage;
 bool Game::Keys[GLFW_KEY_LAST] = { 0 };  //GLFW_KEY_LAST это константа, котора€ задаЄт максимальное количество клавиш, распознаваемых GLFW.
 bool Game::KeysProcessed[GLFW_KEY_LAST] = { 0 };
+GameState Game::state = GameState::ACTION;
+
 
 // Initial velocity of the player paddle
 const float PLAYER_VELOCITY(10.0f);
+
+
 
 Game::Game(unsigned int width, unsigned int height) : Width(width),Height(height)
 {
@@ -120,7 +125,11 @@ void Game::Update(float dt)
 				
 				break;
 			}
+			case(GameMsg::chat_message): {
 
+
+				break;
+			}
 
 			}
 		}
@@ -138,7 +147,7 @@ void Game::Update(float dt)
 	else
 	{
 		mapObjects[nPlayerID].vVel = { 0.0f, 0.0f };
-		sceneEvent(); // ѕровер€ем состо€ние Keys[] каждый кадр
+		keyEvents(); // ѕровер€ем состо€ние Keys[] каждый кадр
 
 		updateObjects(dt);
 	}
@@ -154,11 +163,25 @@ void Game::Render()
 	{
 		GameLevel->Render(*Renderer);
 		renderObject();
-		
+
+
+		//chat
+		ResourceManager::GetShader("sprite").use();
+		glm::vec4 color = { 1.0f,0.0f,0.0f,1.0f };
+		glm::vec2 size = { Width / 3.0f,Height / 4.0f };
+		glm::vec2 pos = {  (1.0f - size.x / Width) * Width,   (1.0f - size.y / Height) * Height  };
+		char  chr = '#';
+		ResourceManager::GetShader("sprite").setvec4("color", color);
+		Renderer->DrawSprite(chr, pos, size, 0.0f, {0.0f,0.0f,0.0f,0.9f});
+		Renderer->DrawSprite(chr, { pos.x,pos.y + size.y - size.y * 0.1f }, { size.x,size.y * 0.1f }, 0.0f, { 0.1f,0.1f,0.1f,0.9f });
+		text->RenderText(chatMessage, pos.x + size.x * 0.05f , pos.y + size.y - size.y * 0.1f + size.y * 0.05f, 0.5f);
 	}
 }
 
-void Game::sceneEvent(){
+void Game::keyEvents(){
+
+
+	if (state == GameState::ACTION) {
 
 
 	if (this->Keys[GLFW_KEY_A])
@@ -183,8 +206,10 @@ void Game::sceneEvent(){
 
 	}
 
+	}
 
 }
+
 
 void Game::keyCallback(GLFWwindow* window, int key, int scancode, int action, int modes)
 {
@@ -206,6 +231,17 @@ void Game::keyCallback(GLFWwindow* window, int key, int scancode, int action, in
 		func(window, key, scancode, action, modes);
 	}
 
+}
+
+void Game::character_callback(GLFWwindow* window, unsigned int codepoint) {
+	if (state == GameState::TYPINGCHAT) {
+		if (codepoint >= 32 && codepoint <= 126) { // Printable ASCII Engl
+
+			// ƒобавь символ к строке чата
+			chatMessage += static_cast<char>(codepoint);
+		
+		}
+	}
 }
 
 void Game::renderObject()
@@ -230,6 +266,9 @@ void Game::renderObject()
 		text->RenderText(sMenu, (object.second.vPos.x + offset) * BRICK_SIZE, (object.second.vPos.y + 1 + offset) * BRICK_SIZE, 1);
 		
 	}
+
+
+
 
 	// Send player description
 	olc::net::message<GameMsg> msg;
@@ -355,6 +394,24 @@ bool Game::checkCollision(sPlayerDescription& player, glm::vec2& boxpos)
 
 
 	return false;
+}
+
+void Game::PrepareChatInput()
+{
+	state = GameState::TYPINGCHAT;
+	chatMessage.clear();
+}
+
+void Game::ReleaseChatInput()  // TODO
+{
+	state = GameState::ACTION;
+
+	chatMessage.clear();
+}
+
+void Game::delete_Char(){
+	if (!chatMessage.empty()) chatMessage.pop_back(); // удал€ем один char
+
 }
 
 

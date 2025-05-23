@@ -18,17 +18,14 @@ void main()
  vec4 finalColor = color; // копируем uniform
 if (symbol ==  35){ // #
 
-float border =0.05f;
+float border =0.01f;
 
 if(fragPos.x <= border || fragPos.x >= 1 - border ||fragPos.y >= 1 - border || fragPos.y <= border ){ 
 mainColor = vec4(1,1,1,1);
 }else
-mainColor = vec4(0.611,0.3,0.3,1);
+mainColor = color;  // background collor
 
-}
-
-
-if(symbol == 36) // $ 
+}else if(symbol == 36) // $ 
 {
 	 vec2 center = vec2(0.5, 0.5);
         vec2 delta = fragPos.xy - center;

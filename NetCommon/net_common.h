@@ -34,6 +34,7 @@ enum class GameMsg : uint32_t
 	Game_AddPlayer,
 	Game_RemovePlayer,
 	Game_UpdatePlayer,
+	chat_message,
 };
 
 struct sPlayerDescription
@@ -50,4 +51,9 @@ struct sPlayerDescription
 
 	glm::vec2 vPos;
 	glm::vec2 vVel;
+};
+struct sChatMessage
+{
+	uint32_t nSenderID;            // ID отправителя (тот же, что в sPlayerDescription.nUniqueID)
+	std::string sText;             // Сам текст
 };

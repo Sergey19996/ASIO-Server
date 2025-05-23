@@ -108,7 +108,13 @@ protected:
 		
 			break;
 		}
+		case(GameMsg::chat_message): {
 
+
+
+			MessageAllClients(msg, client);
+			break;
+		}
 		}
 
 	}

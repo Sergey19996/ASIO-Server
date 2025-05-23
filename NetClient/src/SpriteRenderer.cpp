@@ -13,7 +13,7 @@ SpriteRenderer::~SpriteRenderer()
 	glDeleteBuffers(1, &this->VBO);
 }
 
-void SpriteRenderer::DrawSprite(char& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color)
+void SpriteRenderer::DrawSprite(char& texture, glm::vec2 position, glm::vec2 size, float rotate, glm::vec4 color)
 {
 	this->shader.use();
 
@@ -35,7 +35,7 @@ void SpriteRenderer::DrawSprite(char& texture, glm::vec2 position, glm::vec2 siz
 //		shader.setInt("symbol", 0);
 //	}
 	shader.setMat4("model", trans);
-
+	shader.setvec4("color", color);
 
 	//glActiveTexture(GL_TEXTURE0);  // что бы отправить данные о текстуре 
 	//texture.Bind();

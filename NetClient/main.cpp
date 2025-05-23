@@ -6,6 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "src/Game.h"
 #include "src/ResourceManager.h"
+#include "src/GameStates.hpp"
+
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 608
 
@@ -23,28 +25,42 @@ void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
 	//	game.sceneEvent();
 		break;
 	case GLFW_PRESS:
-	//	std::cout << "Press code" << key << std::endl;
-	//	game.sceneEvent();
+
+		if (key == GLFW_KEY_ENTER) {   // when we start typing 
+			if (game.GetState() == GameState::ACTION) {
+				game.PrepareChatInput();
+
+
+
+			}
+			else {  // when we typed and release  chat
+				game.ReleaseChatInput();
+
+		
+			}
+		}
+
+			else if (key == GLFW_KEY_BACKSPACE && game.GetState() == GameState::TYPINGCHAT) {
+				game.delete_Char();
+
+			}
+			
+		
+
 		break;
 	case GLFW_REPEAT:
 	//	std::cout << "Repeat code" << key << std::endl;
-	//	game.sceneEvent();
+		
 		break;
 
 	};
 
+	// chat
+	
+	// chat
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
-	//	saveGame(BlocksDestroyer.getSaveData(), "save/saveGame.bin");
-	//	unsigned int LoadedRecord = 0;
-	//	if (loadGame(LoadedRecord, "save/saveRecord.bin")) // если файл есть то мы подгружаем старый прогресс
-	//	{
-	//		if (Game::RECORD > LoadedRecord) // если текущий рекорд больше подгруженого
-	//		{
-	//			saveGame(Game::RECORD, "save/saveRecord.bin");  // то мы 
-
-	//		}
-	//	}
+	
 
 		glfwSetWindowShouldClose(window, true);
 	}
@@ -78,8 +94,9 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetKeyCallback(window, Game::keyCallback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);   // glwfpoolevent() вызывает их 
+	glfwSetKeyCallback(window, Game::keyCallback); // glwfpoolevent() вызывает их 
+	glfwSetCharCallback(window, Game::character_callback); // glwfpoolevent() вызывает их 
 	glfwSwapInterval(1);
 
 	// glad: load all OpenGL function pointers

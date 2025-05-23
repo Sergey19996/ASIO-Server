@@ -153,6 +153,7 @@
     <ClInclude Include="src\Rendering\Texture.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\SpriteRenderer.h" />
+    <ClInclude Include="src\GameStates.hpp" />
     <ClInclude Include="src\Text\TextRender.h" />
   </ItemGroup>
   <ItemGroup>

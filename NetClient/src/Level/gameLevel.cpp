@@ -35,7 +35,7 @@ void gameLevel::Render(SpriteRenderer& renderer){
 		for (float x = 0; x < ScreenSize.x; x++) {
 			char tile = LevelData[y * ScreenSize.x + x];
 
-			renderer.DrawSprite(tile, glm::ivec2(x * 32,y * 32));
+            renderer.DrawSprite(tile, glm::ivec2(x * 32, y * 32),glm::vec2(32.0f,32.0f),0.0f, glm::vec4(0.611f, 0.3f, 0.3f,1.0f));
 
 
 		}
