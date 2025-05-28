@@ -3,7 +3,7 @@
 #include "SpriteRenderer.h"
 #include "ResourceManager.h"
 #include "Text/TextRender.h"
-
+#include "io/Mouse.h"
 gameLevel* GameLevel;
 SpriteRenderer* Renderer;
 TextRenderer* text;
@@ -127,6 +127,14 @@ void Game::Update(float dt)
 			}
 			case(GameMsg::chat_message): {
 
+				sChatMessage chatgmsg;
+				msg >> chatgmsg.nSenderID;  // reverse reading
+				msg >> chatgmsg.sText;
+
+				std::cout << "Reseave msg" << std::endl;
+				chatMessages.push_back(chatgmsg);
+				std::cout << "Push back in deque" << std::endl;
+
 
 				break;
 			}
@@ -174,7 +182,16 @@ void Game::Render()
 		ResourceManager::GetShader("sprite").setvec4("color", color);
 		Renderer->DrawSprite(chr, pos, size, 0.0f, {0.0f,0.0f,0.0f,0.9f});
 		Renderer->DrawSprite(chr, { pos.x,pos.y + size.y - size.y * 0.1f }, { size.x,size.y * 0.1f }, 0.0f, { 0.1f,0.1f,0.1f,0.9f });
-		text->RenderText(chatMessage, pos.x + size.x * 0.05f , pos.y + size.y - size.y * 0.1f + size.y * 0.05f, 0.5f);
+		text->RenderText(chatMessage, pos.x + size.x * 0.05f, pos.y + size.y - size.y * 0.1f + size.y * 0.05f, 0.5f);
+
+		
+		//Draw messages in chat 
+		for (int i = 0; i < chatMessages.size(); i++)
+		{
+			text->RenderText(std::to_string(chatMessages[i].nSenderID) + " : " + chatMessages[i].sText, pos.x + size.x * 0.05f, pos.y +(pos.y * 0.01f) + ((TEXTSIZE * 0.5f) * i), 0.5f);
+		}
+
+			
 	}
 }
 
@@ -246,13 +263,15 @@ void Game::character_callback(GLFWwindow* window, unsigned int codepoint) {
 
 void Game::renderObject()
 {
+	glm::vec2 MousePos = { Mouse::getMouseX() / BRICK_SIZE, Mouse::getMouseY() / BRICK_SIZE };
+
 	ResourceManager::GetShader("sprite").use();
 	char PlayerChar = '$';
 	// Draw World Objects
 	for (auto& object : mapObjects)
 	{
 		ResourceManager::GetShader("sprite").setFloat("radius", object.second.fRadius);
-		ResourceManager::GetShader("sprite").setvec2("direction", object.second.vVel);
+		ResourceManager::GetShader("sprite").setvec2("direction", MousePos - object.second.vPos);
 
 		Renderer->DrawSprite(PlayerChar, { object.second.vPos.x * BRICK_SIZE, object.second.vPos.y * BRICK_SIZE });
 
@@ -406,7 +425,24 @@ void Game::ReleaseChatInput()  // TODO
 {
 	state = GameState::ACTION;
 
+	if (chatMessage.size() != 0) {
+
+	
+	//Send()
+	olc::net::message<GameMsg> msg;
+	msg.header.id = GameMsg::chat_message;
+	msg << chatMessage;  //string
+	msg << nPlayerID; // id
+	Send(msg);  // Record first string then id
+
+
+	sChatMessage chatgmsg;
+	msg >> chatgmsg.nSenderID;
+	msg >> chatgmsg.sText;
+
+	chatMessages.push_back(chatgmsg);
 	chatMessage.clear();
+	}
 }
 
 void Game::delete_Char(){

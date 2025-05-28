@@ -109,9 +109,15 @@ protected:
 			break;
 		}
 		case(GameMsg::chat_message): {
+			/*uint32_t senderID;
+			std::string text;
 
+			msg >> text;
+			msg >> senderID;
 
+			sChatMessage
 
+			std::cout << "chatMessage comming" << std::endl;*/
 			MessageAllClients(msg, client);
 			break;
 		}

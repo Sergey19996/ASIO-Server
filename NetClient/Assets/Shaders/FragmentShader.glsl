@@ -43,9 +43,9 @@ mainColor = color;  // background collor
             mainColor = vec4(0.0, 0.0, 0.0, 0.0); // Прозрачный фон (или другой цвет)
         }
 
-        float dirFrag = dot(normalize(direction), normalize(delta)); // Косинус угла между
+        float dirFrag = dot(normalize(direction), normalize(delta)); // Косинус угла между  направлением и каждым фрагментом 
 
-        if (dirFrag > 0.99)
+        if (dirFrag > 0.99)    // если co == 1  значит на линии фрагмент(параллелен)
         {
             mainColor = vec4(0.0, 1.0, 1.0, 1.0); // Подсветка по направлению
         }

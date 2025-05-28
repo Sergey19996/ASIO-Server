@@ -7,6 +7,7 @@
 #include "src/Game.h"
 #include "src/ResourceManager.h"
 #include "src/GameStates.hpp"
+#include "src/io/Mouse.h"
 
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 608
@@ -68,7 +69,21 @@ void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 
 }
+void MousePosChanged(GLFWwindow* window, double _x, double _y) {
+	
 
+	
+}
+void MouseWheelChanged(GLFWwindow* window, double dx, double dy) {
+
+}
+void MouseButtonChanged(GLFWwindow* window, int button, int action, int mods) {
+	if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
+	
+
+
+	}
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -97,6 +112,15 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);   // glwfpoolevent() вызывает их 
 	glfwSetKeyCallback(window, Game::keyCallback); // glwfpoolevent() вызывает их 
 	glfwSetCharCallback(window, Game::character_callback); // glwfpoolevent() вызывает их 
+
+	//cursor moved
+	glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
+	//mouse btn pressed
+	glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
+	//mouse scroll
+	glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
+
+
 	glfwSwapInterval(1);
 
 	// glad: load all OpenGL function pointers
@@ -124,6 +148,10 @@ int main() {
 	float timer = 0.0f;
 
 	Game::keyCallbacks.push_back(keyChanged);
+	Mouse::mouseButtonCallBacks.push_back(MouseButtonChanged);  // определяем тело функции для вызова в ивенте
+	Mouse::mouseWheelCallBacks.push_back(MouseWheelChanged);
+	Mouse::cursorPosCallBacks.push_back(MousePosChanged);
+
 
 	while (!glfwWindowShouldClose(window)) {
 		float LastTime = timeValue;  // Сохраняем предыдущее время
