@@ -135,7 +135,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FrameworkBasics\SimpleServer.cpp" />
+    <ClCompile Include="..\FrameworkBasics\main.cpp" />
+    <ClCompile Include="gameLevel.cpp" />
+    <ClCompile Include="gameLevel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

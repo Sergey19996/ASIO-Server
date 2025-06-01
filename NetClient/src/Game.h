@@ -35,20 +35,23 @@ public:
 	void Update(float dt);
 	void Render();
 	void keyEvents();
-	
+	void RenderChat();
 	
 	void renderObject();
 	void updateObjects(float felapsedTIme);
 	void ProcessInput(float dt);
 
 	Direction VectorDirection(glm::vec2 target); // <collision?, what direction?, difference vector center - closest point>
-	bool checkCollision(sPlayerDescription& player,glm::vec2& boxpos);
+	
 
 	GameState& GetState() { return state; };
 	void SetState(GameState State) { state = State; };
 	void PrepareChatInput();
 	void ReleaseChatInput();
 	void delete_Char();
+
+	void createProjectile();
+
 
 private:
 	static bool Keys[];
@@ -57,7 +60,9 @@ private:
 
 	bool bWaitingForConnection = true;
 
-	std::unordered_map<uint32_t, sPlayerDescription> mapObjects;
+	std::unordered_map<uint32_t,sPlayerDescription> mapObjects;
+	std::unordered_map<uint32_t, sProjectileDescription> mapProjectiles;
+
 	std::deque<sChatMessage> chatMessages;
 
 	uint32_t nPlayerID = 0;

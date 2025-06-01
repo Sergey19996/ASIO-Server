@@ -35,7 +35,12 @@ enum class GameMsg : uint32_t
 	Game_RemovePlayer,
 	Game_UpdatePlayer,
 	chat_message,
+
+	Game_AddProjectile,
+	Game_RemoveProjectile,
+	Game_UpdateProjectile,
 };
+
 
 struct sPlayerDescription
 {
@@ -56,4 +61,15 @@ struct sChatMessage
 {
 	uint32_t nSenderID;            // ID отправителя (тот же, что в sPlayerDescription.nUniqueID)
 	std::string sText;             // Сам текст
+};
+
+struct sProjectileDescription {
+
+	uint32_t nOwnerID = 0;       // ID владельца (игрока)
+	uint32_t nUniqueID = 0;      // ID снаряда
+	glm::vec2 vPos;
+	glm::vec2 vVel;
+	float fLifetime;
+	float fRadius = 0.5f;
+	// можно добавить тип: enum ProjectileType { BULLET, ROCKET, ARROW }
 };

@@ -154,7 +154,11 @@ namespace olc {
 				if (bWait) m_qMessagesIn.wait();  //дальше не пойдем если в  m_qMessagesIn ничего нет
 
 				size_t nMessageCount = 0;
+
+
 				while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty()) {
+
+
 
 					auto msg = m_qMessagesIn.pop_front();
 					OnMessage(msg.remote, msg.msg);
@@ -208,7 +212,7 @@ namespace olc {
 
 			//Client will be identified in the "wider system" via an ID
 			uint32_t nIDCounter = 10000;
-
+			uint32_t nProjectileIDCounter = 30000;
 
 		};
 

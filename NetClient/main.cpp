@@ -80,6 +80,9 @@ void MouseWheelChanged(GLFWwindow* window, double dx, double dy) {
 void MouseButtonChanged(GLFWwindow* window, int button, int action, int mods) {
 	if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
 	
+	//	game.createProjectile();
+
+
 
 
 	}

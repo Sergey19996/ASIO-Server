@@ -19,7 +19,7 @@ GameState Game::state = GameState::ACTION;
 
 
 // Initial velocity of the player paddle
-const float PLAYER_VELOCITY(10.0f);
+
 
 
 
@@ -108,6 +108,36 @@ void Game::Update(float dt)
 				}
 				break;
 			}
+			case(GameMsg::Game_AddProjectile):
+			{
+				sProjectileDescription desc; //  создаём пустой проджектайл
+				msg >> desc;  // записываем в него данные 
+			//	vecProjectiles.push_back(desc);
+
+				mapProjectiles.insert_or_assign(desc.nUniqueID, desc); // так же внедряем в мапу проджектайл
+
+				//if (desc.nUniqueID == nPlayerID)
+				//{
+					// Now we exist in game world
+				//	bWaitingForConnection = false;
+				//}
+				break;
+			}
+			case(GameMsg::Game_UpdateProjectile):
+			{
+				sProjectileDescription desc; //  создаём пустой проджектайл
+				msg >> desc;  // записываем в него данные 
+				//	vecProjectiles.push_back(desc);
+
+				mapProjectiles.insert_or_assign(desc.nUniqueID, desc); // так же внедряем в мапу проджектайл
+
+				//if (desc.nUniqueID == nPlayerID)
+				//{
+					// Now we exist in game world
+				//	bWaitingForConnection = false;
+				//}
+				break;
+			}
 
 			case(GameMsg::Game_RemovePlayer):
 			{
@@ -119,10 +149,35 @@ void Game::Update(float dt)
 
 			case(GameMsg::Game_UpdatePlayer):
 			{
-				sPlayerDescription desc;
-				msg >> desc;
-				mapObjects.insert_or_assign(desc.nUniqueID, desc);
+			//	sPlayerDescription desc;
+			//	msg >> desc;
+			//	mapObjects.insert_or_assign(desc.nUniqueID, desc);
 				
+
+			//	olc::net::message<GameMsg> msgUpdate;
+				//msgUpdate.header.id = GameMsg::Game_UpdatePlayer;  // отдельный ID для массового обновления
+
+				uint16_t numPlayers = 0;    // создаём пустышку для кол-ва игроков
+				msg >> numPlayers;  // Записываем в него 
+
+				// Важно: читаем в обратном порядке
+				for (uint16_t i = 0; i < numPlayers; i++)   // идем по прибывшему кол-ву игроков
+				{
+					sPlayerDescription desc;   // создаём пустышку
+					msg >> desc;
+
+					mapObjects.insert_or_assign(desc.nUniqueID, desc);
+
+					// Обновляем локальные данные
+				//	mapObjects[id] = desc;
+
+					// Можешь добавить отладку:
+				/*	std::cout << "Player " << id << " pos: "
+						<< desc.vPos.x << ", " << desc.vPos.y << std::endl;*/
+				}
+
+
+
 				break;
 			}
 			case(GameMsg::chat_message): {
@@ -173,23 +228,7 @@ void Game::Render()
 		renderObject();
 
 
-		//chat
-		ResourceManager::GetShader("sprite").use();
-		glm::vec4 color = { 1.0f,0.0f,0.0f,1.0f };
-		glm::vec2 size = { Width / 3.0f,Height / 4.0f };
-		glm::vec2 pos = {  (1.0f - size.x / Width) * Width,   (1.0f - size.y / Height) * Height  };
-		char  chr = '#';
-		ResourceManager::GetShader("sprite").setvec4("color", color);
-		Renderer->DrawSprite(chr, pos, size, 0.0f, {0.0f,0.0f,0.0f,0.9f});
-		Renderer->DrawSprite(chr, { pos.x,pos.y + size.y - size.y * 0.1f }, { size.x,size.y * 0.1f }, 0.0f, { 0.1f,0.1f,0.1f,0.9f });
-		text->RenderText(chatMessage, pos.x + size.x * 0.05f, pos.y + size.y - size.y * 0.1f + size.y * 0.05f, 0.5f);
-
-		
-		//Draw messages in chat 
-		for (int i = 0; i < chatMessages.size(); i++)
-		{
-			text->RenderText(std::to_string(chatMessages[i].nSenderID) + " : " + chatMessages[i].sText, pos.x + size.x * 0.05f, pos.y +(pos.y * 0.01f) + ((TEXTSIZE * 0.5f) * i), 0.5f);
-		}
+		RenderChat();
 
 			
 	}
@@ -225,6 +264,27 @@ void Game::keyEvents(){
 
 	}
 
+}
+
+void Game::RenderChat(){
+
+	//chat
+	ResourceManager::GetShader("sprite").use();
+	glm::vec4 color = { 1.0f,0.0f,0.0f,1.0f };
+	glm::vec2 size = { Width / 3.0f,Height / 4.0f };
+	glm::vec2 pos = { (1.0f - size.x / Width) * Width,   (1.0f - size.y / Height) * Height };
+	char  chr = '#';
+	ResourceManager::GetShader("sprite").setvec4("color", color);
+	Renderer->DrawSprite(chr, pos, size, 0.0f, { 0.0f,0.0f,0.0f,0.9f });
+	Renderer->DrawSprite(chr, { pos.x,pos.y + size.y - size.y * 0.1f }, { size.x,size.y * 0.1f }, 0.0f, { 0.1f,0.1f,0.1f,0.9f });
+	text->RenderText(chatMessage, pos.x + size.x * 0.05f, pos.y + size.y - size.y * 0.1f + size.y * 0.05f, 0.5f);
+
+
+	//Draw messages in chat 
+	for (int i = 0; i < chatMessages.size(); i++)
+	{
+		text->RenderText(std::to_string(chatMessages[i].nSenderID) + " : " + chatMessages[i].sText, pos.x + size.x * 0.05f, pos.y + (pos.y * 0.01f) + ((TEXTSIZE * 0.5f) * i), 0.5f);
+	}
 }
 
 
@@ -267,8 +327,29 @@ void Game::renderObject()
 
 	ResourceManager::GetShader("sprite").use();
 	char PlayerChar = '$';
+
+
 	// Draw World Objects
 	for (auto& object : mapObjects)
+	{
+		ResourceManager::GetShader("sprite").setFloat("radius", object.second.fRadius);
+		ResourceManager::GetShader("sprite").setvec2("direction", MousePos - object.second.vPos);
+
+		Renderer->DrawSprite(PlayerChar, { object.second.vPos.x * BRICK_SIZE, object.second.vPos.y * BRICK_SIZE });
+
+		
+
+		// Сразу сбрасываем direction
+		ResourceManager::GetShader("sprite").setvec2("direction", { 0.0f, 0.0f });
+
+		// Затем текст (если он не использует этот шейдер, можно не беспокоиться)
+		std::string sMenu = std::to_string(object.second.nUniqueID);
+		float proportion = static_cast<float>(TEXTSIZE) / BRICK_SIZE;
+		float offset = (1.0f - proportion) / 2.0f;
+		text->RenderText(sMenu, (object.second.vPos.x + offset) * BRICK_SIZE, (object.second.vPos.y + 1 + offset) * BRICK_SIZE, 1);
+		
+	}
+	for (auto& object : mapProjectiles)
 	{
 		ResourceManager::GetShader("sprite").setFloat("radius", object.second.fRadius);
 		ResourceManager::GetShader("sprite").setvec2("direction", MousePos - object.second.vPos);
@@ -283,16 +364,15 @@ void Game::renderObject()
 		float proportion = static_cast<float>(TEXTSIZE) / BRICK_SIZE;
 		float offset = (1.0f - proportion) / 2.0f;
 		text->RenderText(sMenu, (object.second.vPos.x + offset) * BRICK_SIZE, (object.second.vPos.y + 1 + offset) * BRICK_SIZE, 1);
-		
-	}
 
+	}
 
 
 
 	// Send player description
 	olc::net::message<GameMsg> msg;
 	msg.header.id = GameMsg::Game_UpdatePlayer;
-	msg << mapObjects[nPlayerID];
+	msg << mapObjects[nPlayerID].vVel;
 
 	//sPlayerDescription desc;
 	//msg >> desc;
@@ -304,73 +384,7 @@ void Game::renderObject()
 
 void Game::updateObjects(float fElapsedTime)
 {
-	// Update objects locally
-	for (auto& object : mapObjects)
-	{
-		// Потенциальная позиция после движения
-		glm::vec2 vPotentialPosition = object.second.vPos + object.second.vVel * fElapsedTime * PLAYER_VELOCITY;
-		
-		// учитываем центр круга
-			glm::vec2 vCircleCenter = vPotentialPosition + glm::vec2(object.second.fRadius);
-
-		// Текущая и целевая клетка
-		glm::ivec2 vCurrentCell = glm::floor(object.second.vPos);  // Преобразуем float -> int через floor
-		glm::ivec2 vTargetCell = glm::floor(vPotentialPosition);
-
-		// Верхний левый и нижний правый угол области проверки
-		glm::ivec2 vAreaTL = glm::max(glm::min(vCurrentCell, vTargetCell) - glm::ivec2(1, 1), glm::ivec2(0, 0));
-		glm::ivec2 vAreaBR = glm::min(glm::max(vCurrentCell, vTargetCell) + glm::ivec2(1, 1), GameLevel->ScreenSize);
-
-
-		// Перебор всех клеток в области
-		for (int y = vAreaTL.y; y <= vAreaBR.y; ++y)
-		{
-			for (int x = vAreaTL.x; x <= vAreaBR.x; ++x)
-			{
-				// Проверка коллизии с клеткой (например, символ стены)
-				if (GameLevel->LevelData[y * GameLevel->ScreenSize.x + x] == '#')
-				{
-					glm::vec2 vNearestPoint;
-					// Inspired by this (very clever btw) 
-					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
-					vNearestPoint.x = std::max(float(x), std::min(vCircleCenter.x, float(x + 1)));
-					vNearestPoint.y = std::max(float(y), std::min(vCircleCenter.y, float(y + 1)));
-
-					//glm::ivec2 vAreaTL = glm::max(glm::min(vCurrentCell, vTargetCell) - glm::ivec2(1, 1), glm::ivec2(0, 0));
-				//	glm::ivec2 vAreaBR = glm::min(glm::max(vCurrentCell, vTargetCell) + glm::ivec2(1, 1), GameLevel->ScreenSize);
-
-
-					// But modified to work :P
-				
-					glm::vec2 vRayToNearest = vNearestPoint - vCircleCenter;
-					float fOverlap = object.second.fRadius - glm::length(vRayToNearest); 
-					if (std::isnan(fOverlap)) fOverlap = 0;// Thanks Dandistine!
-
-					// If overlap is positive, then a collision has occurred, so we displace backwards by the 
-					// overlap amount. The potential position is then tested against other tiles in the area
-					// therefore "statically" resolving the collision
-					if (fOverlap > 0)
-					{
-						// Statically resolve the collision
-						vPotentialPosition = vPotentialPosition - glm::normalize(vRayToNearest) * fOverlap;
-					}
-					
-
-				}
-
-
-			}
-			
-		}
 	
-
-		// Set the objects new position to the allowed potential position
-		object.second.vPos = vPotentialPosition;
-		
-	}
-
-	
-
 }
 
 void Game::ProcessInput(float dt)
@@ -378,42 +392,6 @@ void Game::ProcessInput(float dt)
 
 }
 
-bool Game::checkCollision(sPlayerDescription& player, glm::vec2& boxpos)
-{
-
-
-
-	//get center point circle first
-	glm::vec2 center(player.vPos + player.fRadius);
-	//Calculate AABB info
-	glm::vec2 aabb_half_extens(0.5f);  // центр локальный квадрата
-	glm::vec2 aabb_center(boxpos + aabb_half_extens); // центр квадрата  в мире 
-	glm::vec2 difference = center - aabb_center; // вектор от центра квадрата до центра круга в мире 
-
-	glm::vec2 clmaped = glm::clamp(difference, -aabb_half_extens, aabb_half_extens); //nearest point in local space   glm::clamp(glm::vec2(3.0, -5.0), glm::vec2(-2.0, -2.0), glm::vec2(2.0, 2.0)) // вернёт: glm::vec2(2.0, -2.0)
-	glm::vec2 closest = aabb_center + clmaped; // nearest point in world
-
-	difference = closest - center; // вектор от сентра к ближайшей точк
-	//std::cout << glm::length(difference) << std::endl;
-	
-	if (glm::length(difference) <=player.fRadius) {
-		std::cout << "Collided" << std::endl;
-		return true;
-		
-
-
-	}
-	else
-	{
-		std::cout << "NOT Collided" << std::endl;
-		return false;
-	}
-
-
-
-
-	return false;
-}
 
 void Game::PrepareChatInput()
 {
@@ -448,6 +426,26 @@ void Game::ReleaseChatInput()  // TODO
 void Game::delete_Char(){
 	if (!chatMessage.empty()) chatMessage.pop_back(); // удаляем один char
 
+}
+
+void Game::createProjectile()
+{
+	glm::vec2 MousePos = { Mouse::getMouseX() / BRICK_SIZE, Mouse::getMouseY() / BRICK_SIZE }; // берем данные мышки
+
+	olc::net::message<GameMsg> msg;   // cоздаем пустое сооьщение
+	msg.header.id = GameMsg::Game_AddProjectile; // говорим в какой ивент нужно попасть на сервере
+
+
+	sProjectileDescription desc;  // создаем пустой продж
+	desc.nOwnerID = nPlayerID; // говорим кто хозяин
+	desc.vPos = mapObjects[nPlayerID].vPos;  // говорим позицию
+	desc.vVel = glm::normalize(MousePos - desc.vPos) ; //даходит длинну вектора и делить на х и на у
+
+
+	msg << desc; // записываем всё в сообщение
+
+	//mapObjects.insert_or_assign(desc.nOwnerID, desc);
+	Send(msg); // отправляем на сервер
 }
 
 
