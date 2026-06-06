@@ -1,0 +1,136 @@
+{
+  "tiles": {
+    "Ground": {
+      "name": "grass, small stones,ground",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.0 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "frames": 1
+    },
+    "BigStone": {
+      "name": "Brick Block",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.0625 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "size_x": 1,
+      "size_y": 1,
+      "frames": 1
+    },
+    "Beacon": {
+      "name": "Big Candle",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.125 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "ice": {
+      "name": "frost soul",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.1875 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "explosive": {
+      "name": "fire Soul",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.25 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "sand": {
+      "name": "Sand place",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.5625 ],
+      "uv_scale": [ 0.125, 0.125 ],
+      "size_x": 2,
+      "size_y": 2,
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "fire": {
+      "name": "fire place",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.8125 ],
+      "uv_scale": [ 0.125, 0.125 ],
+      "size_x": 2,
+      "size_y": 2,
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "healer": {
+      "name": "healing potion",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.3125 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "graveyard": {
+      "name": "cursed place",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.375 ],
+      "uv_scale": [ 0.125, 0.125 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    },
+    "altar": {
+      "name": "Celling for prisoner",
+      "texture_tag": "Level_tiles",
+      "uv": [ 0.0, 0.5 ],
+      "uv_scale": [ 0.0625, 0.0625 ],
+      "shadow_type": "shadow",
+      "frames": 1,
+      "anim_speed": 10.0
+    }
+  },
+  "decals": {
+    "1": {
+      "name": "Small Grass Tuft",
+      "uv": [ 0.0, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    },
+    "2": {
+      "name": "small bush",
+      "uv": [ 0.0625, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    },
+    "3": {
+      "name": "small bone",
+      "uv": [ 0.3125, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    },
+    "4": {
+      "name": "Head bone",
+      "uv": [ 0.25, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    },
+    "5": {
+      "name": "cracks",
+      "uv": [ 0.125, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    },
+    "6": {
+      "name": "blood",
+      "uv": [ 0.1875, 0.4375 ],
+      "uv_scale": [ 0.0625, 0.0625 ]
+    }
+  },
+  "shadows": {
+    "shadow": {
+      "name": "Universal Ambient Shadow",
+      "uv": [ 0.875, 0.875 ],
+      "uv_scale": [ 0.125, 0.125 ],
+      "size_x": 2,
+      "size_y": 2
+    }
+  }
+}

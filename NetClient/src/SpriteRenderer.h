@@ -1,7 +1,7 @@
 #ifndef SPRITE_RENDERER_H
 #define SPRITE_RENDERER_H
 #include "Rendering/Shader.h"
-
+#include "Rendering/Texture.h"
 
 
 #include <glad/glad.h>
@@ -12,20 +12,37 @@
 class SpriteRenderer {
 public:
 
-	SpriteRenderer(Shader& shader);
+	SpriteRenderer();
 	~SpriteRenderer();
 
 
-	void DrawSprite(char& texture, glm::vec2 position,
+	void DrawSprite(
+		Shader& shader,
+		char texture, glm::vec2 position,
 		glm::vec2 size = glm::vec2(32.0f, 32.0f), float rotate = 0.0f,
-		glm::vec4 color = glm::vec4(1.0f));
+		glm::vec4 color = glm::vec4(1.0f), bool bFrame = true);
 
-	Shader& getShader() { return shader; };
+	void DrawSprite(
+		Shader& shader,
+		Texture2D& texture,
+		glm::vec2 position,
+		glm::vec2 size = glm::vec2(32.0f),
+		float rotate = 0.0f,
+		glm::vec4 color = glm::vec4(1.0f)
+	);
+
+	void DrawSprite(Shader& shader,
+		Texture2D& texture,
+		glm::vec2 position,
+		glm::vec2 size,
+		float rotate,
+		glm::vec4 color,
+		glm::vec2 uvOffset, glm::vec2 uvScale);
 
 
 private:
 
-	Shader shader;
+	
 	unsigned quadVAO;  // хранит вертексы квадрата
 	unsigned int  VBO, EBO;
 

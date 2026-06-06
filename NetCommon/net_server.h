@@ -64,6 +64,9 @@ namespace olc {
 					[this](std::error_code ec, asio::ip::tcp::socket Socket) {
 						if (!ec)
 						{
+							// ОТКЛЮЧАЕМ АЛГОРИТМ НАГЛА ЗДЕСЬ
+							Socket.set_option(asio::ip::tcp::no_delay(true));
+
 							std::cout << "[SERVER] new Connection: " << Socket.remote_endpoint() << "\n"; 
 
 							std::shared_ptr<connection<T>> newconn =      // cоздайтся коннект с сообщением от клиента там же и генерируется valid переменная для shakehands
@@ -74,6 +77,9 @@ namespace olc {
 							if (OnClientConnect(newconn)) {  // cервер отправляет сообщение ServerAccept клиенту 
 
 								//Connection allowed, so add to container of new connections
+
+								std::scoped_lock lock(muxConnections);
+
 								m_deqConnections.push_back(std::move(newconn));  
 
 								m_deqConnections.back()->ConnectToClient(this, nIDCounter++);  // тут мы присваиваем id клиенту и начинаем  запускать проверку (handshake)
@@ -102,60 +108,68 @@ namespace olc {
 			//Send a message to a specific client
 			void MessageClient(std::shared_ptr<connection<T>> client, const message<T>& msg) {
 
+				// Просто отправляем. Если клиент мертв, его вычистит Update() в следующем кадре.
 				if (client && client->IsConnected()) {
 					client->Send(msg);
 				}
-				else
-				{
-					OnClientDisconnect(client);
-					client.reset();
-					m_deqConnections.erase(
-						std::remove(m_deqConnections.begin(), m_deqConnections.end(), client), m_deqConnections.end());
-				}
 
+			}
+			
+			std::shared_ptr<connection<T>> GetClientById(uint32_t id) //  ищет соединение по c->GetID()
+			{
+				for (auto& c : m_deqConnections)
+					if (c && c->GetID() == id)
+						return c;
+				return nullptr;
 			}
 			//Send message to all clients
 			void MessageAllClients(const message<T>& msg,std::shared_ptr<connection<T>>pIgnoreClient = nullptr){
-				bool bInvalidClientExists = false;
-
-				// Iterate through all clients in container
 				for (auto& client : m_deqConnections)
 				{
-					// Check client is connected...
+					// Только отправляем. Если сокет закрыт, Send просто ничего не сделает 
+					// или ASIO обработает ошибку позже.
 					if (client && client->IsConnected())
 					{
-						// ..it is!
 						if (client != pIgnoreClient)
 							client->Send(msg);
 					}
-					else
-					{
-						// The client couldnt be contacted, so assume it has
-						// disconnected.
-						OnClientDisconnect(client);
-						client.reset();
-
-						// Set this flag to then remove dead clients from container
-						bInvalidClientExists = true;
-					}
 				}
 
-				// Remove dead clients, all in one go - this way, we dont invalidate the
-				// container as we iterated through it.
-				if (bInvalidClientExists)
-					m_deqConnections.erase(
-						std::remove(m_deqConnections.begin(), m_deqConnections.end(), nullptr), m_deqConnections.end());
 
 			}
 
 			void Update(size_t nMaxMessages = -1,bool bWait = false) {
 
 				//For not occupy 100% of a CPU cpre
-				if (bWait) m_qMessagesIn.wait();  //дальше не пойдем если в  m_qMessagesIn ничего нет
+				//if (bWait) m_qMessagesIn.wait();  //дальше не пойдем если в  m_qMessagesIn ничего нет
+
+				
+				// Быстрая проверка - если очередь пуста, сразу выходим
+				/*if (m_qMessagesIn.empty()) {
+					return;
+				}*/
+
+				std::scoped_lock lock(muxConnections); // ЗАЩИЩАЕМ СПИСОК
+				// 1. Сначала находим и обрабатываем тех, кто отключился
+				   // Мы не можем просто удалить их, нам нужно вызвать OnClientDisconnect
+				for (auto& client : m_deqConnections) {
+					if (client && !client->IsConnected()) {
+						// Вызываем вашу логику (удаление персонажа и т.д.)
+						OnClientDisconnect(client);
+					}
+				}
+
+			
+				// 2. Теперь очищаем контейнер от мертвых указателей
+				m_deqConnections.erase(
+					std::remove_if(m_deqConnections.begin(), m_deqConnections.end(),
+						[](std::shared_ptr<connection<T>>& ptr) {
+							return ptr && !ptr->IsConnected();
+						}),
+					m_deqConnections.end()
+				);
 
 				size_t nMessageCount = 0;
-
-
 				while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty()) {
 
 
@@ -212,8 +226,8 @@ namespace olc {
 
 			//Client will be identified in the "wider system" via an ID
 			uint32_t nIDCounter = 10000;
-			uint32_t nProjectileIDCounter = 30000;
-
+		
+			std::mutex muxConnections;
 		};
 
 

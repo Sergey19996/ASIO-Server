@@ -1,0 +1,240 @@
+{
+  "0": {
+    "name": "Fireball",
+    "description": "Shoots a fireball that ignites enemies",
+    "resource": "fire",
+    "cost": 10,
+    "uv": [ 0.0, 0.1875 ]
+  },
+  "1": {
+    "name": "Iceball",
+    "description": "Fires a freezing projectile",
+    "resource": "frost",
+    "cost": 12,
+    "uv": [ 0.1875, 0.1875 ]
+  },
+  "2": {
+    "name": "Wall",
+    "description": "Creates a temporary physical barrier",
+    "resource": "resist",
+    "cost": 20,
+    "uv": [ 0.25, 0.0 ]
+  },
+  "3": {
+    "name": "Smash Hit",
+    "description": "Powerful melee strike",
+    "resource": "resist",
+    "cost": 15,
+    "uv": [ 0.0, 0.09375 ]
+  },
+  "4": {
+    "name": "Shoot",
+    "description": "Quick ranged attack",
+    "resource": "stamina",
+    "cost": 5,
+    "uv": [ 0.0, 0.0 ]
+  },
+  "5": {
+    "name": "Shield",
+    "description": "Reduces incoming damage",
+    "resource": "resist",
+    "cost": 10,
+    "uv": [ 0.1875, 0.09375 ]
+  },
+  "6": {
+    "name": "Heal",
+    "description": "Restores a portion of health",
+    "resource": "mana",
+    "cost": 25,
+    "uv": [ 0.75, 0.0 ]
+  },
+  "7": {
+    "name": "Dash",
+    "description": "Quick burst of movement",
+    "resource": "stamina",
+    "cost": 8,
+    "uv": [ 0.552, 0.1875 ]
+  },
+  "8": {
+    "name": "Sticky Bomb",
+    "description": "Explosive that attaches to targets",
+    "resource": "fire",
+    "cost": 15,
+    "uv": [ 0.281, 0.0 ]
+  },
+  "9": {
+    "name": "Teleport",
+    "description": "Instant relocation to target point",
+    "resource": "mana",
+    "cost": 30,
+    "uv": [ 0.125, 0.125 ]
+  },
+  "10": {
+    "name": "Grapple",
+    "description": "Pulls you towards a surface",
+    "resource": "stamina",
+    "cost": 10,
+    "uv": [ 0.093, 0.0 ]
+  },
+  "11": {
+    "name": "Hook",
+    "description": "Pulls an enemy towards you",
+    "resource": "stamina",
+    "cost": 12,
+    "uv": [ 0.093, 0.093 ]
+  },
+  "12": {
+    "name": "Resonance Crystal",
+    "description": "Summons a crystal that pulses energy",
+    "resource": "mana",
+    "cost": 40,
+    "uv": [ 0.5, 0.125 ]
+  },
+  "13": {
+    "name": "Blast Wave",
+    "description": "Knocks back all nearby enemies",
+    "resource": "fire",
+    "cost": 20,
+    "uv": [ 0.656, 0.187 ]
+  },
+  "14": {
+    "name": "Bind Arrow",
+    "description": "Arrow that roots the target in place",
+    "resource": "frost",
+    "cost": 15,
+    "uv": [ 0.187, 0.0 ]
+  },
+  "15": {
+    "name": "Shield Burst",
+    "description": "Release shield energy to damage foes",
+    "resource": "resist",
+    "cost": 15,
+    "uv": [ 0.281, 0.093 ]
+  },
+  "16": {
+    "name": "Shield Throw",
+    "description": "Throws shield as a returning projectile",
+    "resource": "resist",
+    "cost": 18,
+    "uv": [ 0.375, 0.093 ]
+  },
+  "17": {
+    "name": "Infuse Arrow",
+    "description": "Adds elemental damage to next shot",
+    "resource": "mana",
+    "cost": 10,
+    "uv": [ 0.562, 0.0 ]
+  },
+  "18": {
+    "name": "Chain Harvest",
+    "description": "Drains life from multiple enemies",
+    "resource": "mana",
+    "cost": 35,
+    "uv": [ 0.468, 0.0 ]
+  },
+  "19": {
+    "name": "Ghost Arrow",
+    "description": "Arrow that passes through walls",
+    "resource": "mana",
+    "cost": 20,
+    "uv": [ 0.375, 0.0 ]
+  },
+  "20": {
+    "name": "Fire Dash",
+    "description": "Dash that leaves a trail of fire",
+    "resource": "fire",
+    "cost": 15,
+    "uv": [ 0.562, 0.187 ]
+  },
+  "21": {
+    "name": "Ice Shield",
+    "description": "Shield that chills attackers",
+    "resource": "frost",
+    "cost": 20,
+    "uv": [ 0.281, 0.187 ]
+  },
+  "22": {
+    "name": "Ice Roots",
+    "description": "Freezes enemies' feet to the ground",
+    "resource": "frost",
+    "cost": 18,
+    "uv": [ 0.375, 0.187 ]
+  },
+  "23": {
+    "name": "Stygian Spike",
+    "description": "Summons a dark spike from below",
+    "resource": "mana",
+    "cost": 22,
+    "uv": [ 0.468, 0.187 ]
+  },
+  "24": {
+    "name": "Sun Lance",
+    "description": "Hurls a spear of pure light",
+    "resource": "mana",
+    "cost": 25,
+    "uv": [ 0.75, 0.187 ]
+  },
+  "25": {
+    "name": "Sun Marker",
+    "description": "Marks target for increased damage",
+    "resource": "mana",
+    "cost": 12,
+    "uv": [ 0.125, 0.375 ]
+  },
+  "26": {
+    "name": "Switch Spell",
+    "description": "Swaps position with the target",
+    "resource": "mana",
+    "cost": 15,
+    "uv": [ 0.843, 0.187 ]
+  },
+  "27": {
+    "name": "Magic Conservation",
+    "description": "Reduces cost of next 3 spells",
+    "resource": "mana",
+    "cost": 0,
+    "uv": [ 0.093, 0.187 ]
+  },
+  "28": {
+    "name": "Reload Quiver",
+    "description": "Instantly refills your arrows",
+    "resource": "stamina",
+    "cost": 0,
+    "uv": [ 0.656, 0.0 ]
+  },
+  "29": {
+    "name": "Ghost Arrow",
+    "description": "Arrow that passes through walls",
+    "resource": "mana",
+    "cost": 20,
+    "uv": [ 0.375, 0.0 ]
+  },
+  "30": {
+    "name": "Bind Arrow",
+    "description": "Arrow that roots the target in place",
+    "resource": "frost",
+    "cost": 15,
+    "uv": [ 0.187, 0.0 ]
+  },
+  "31": {
+    "name": "Sticky Bomb",
+    "description": "Explosive that attaches to targets",
+    "resource": "fire",
+    "cost": 15,
+    "uv": [ 0.281, 0.0 ]
+  },
+  "34": {
+    "name": "MoveCommand",
+    "description": "Move at point",
+    "resource": "no",
+    "cost": 0,
+    "uv": [ 0.0, 0.281 ]
+  },
+  "35": {
+    "name": "DeffendCommand",
+    "description": "Defend Place",
+    "resource": "no",
+    "cost": 0,
+    "uv": [ 0.093, 0.281 ]
+  }
+}

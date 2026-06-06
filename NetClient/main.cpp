@@ -15,60 +15,6 @@
 
 Game game(SCREENWIDTH, SCREENHEIGHT);
 
-
-
-void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods) {
-
-	switch (action)
-	{
-	case GLFW_RELEASE:
-	//	std::cout << "Release code" << key << std::endl;
-	//	game.sceneEvent();
-		break;
-	case GLFW_PRESS:
-
-		if (key == GLFW_KEY_ENTER) {   // when we start typing 
-			if (game.GetState() == GameState::ACTION) {
-				game.PrepareChatInput();
-
-
-
-			}
-			else {  // when we typed and release  chat
-				game.ReleaseChatInput();
-
-		
-			}
-		}
-
-			else if (key == GLFW_KEY_BACKSPACE && game.GetState() == GameState::TYPINGCHAT) {
-				game.delete_Char();
-
-			}
-			
-		
-
-		break;
-	case GLFW_REPEAT:
-	//	std::cout << "Repeat code" << key << std::endl;
-		
-		break;
-
-	};
-
-	// chat
-	
-	// chat
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-	
-
-		glfwSetWindowShouldClose(window, true);
-	}
-
-
-
-}
 void MousePosChanged(GLFWwindow* window, double _x, double _y) {
 	
 
@@ -78,17 +24,27 @@ void MouseWheelChanged(GLFWwindow* window, double dx, double dy) {
 
 }
 void MouseButtonChanged(GLFWwindow* window, int button, int action, int mods) {
-	if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_1)) {
+	/*if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_LEFT)) {
 	
-	//	game.createProjectile();
+		game.createFireBall();
 
 
 
 
 	}
+	if (Mouse::buttonWentDown(GLFW_MOUSE_BUTTON_2)) {
+
+		game.createWall();
+
+
+
+
+	}*/
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void keyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+void framebuffer_size_callback(GLFWwindow* window, int levelWidth, int levelHeight);
 
 
 
@@ -114,6 +70,7 @@ int main() {
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);   // glwfpoolevent() вызывает их 
 	glfwSetKeyCallback(window, Game::keyCallback); // glwfpoolevent() вызывает их 
+	glfwSetWindowUserPointer(window, &game);
 	glfwSetCharCallback(window, Game::character_callback); // glwfpoolevent() вызывает их 
 
 	//cursor moved
@@ -150,7 +107,7 @@ int main() {
 	//const float AnimationTimer = 0.2f;
 	float timer = 0.0f;
 
-	Game::keyCallbacks.push_back(keyChanged);
+	
 	Mouse::mouseButtonCallBacks.push_back(MouseButtonChanged);  // определяем тело функции для вызова в ивенте
 	Mouse::mouseWheelCallBacks.push_back(MouseWheelChanged);
 	Mouse::cursorPosCallBacks.push_back(MousePosChanged);
@@ -167,10 +124,9 @@ int main() {
 		game.Update(felapsedTime);
 
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+	
 
-		glClearColor(0.2, 0.3, 0.3f, 1.0f);
+		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -178,7 +134,8 @@ int main() {
 		game.Render();
 
 
-
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 
 	}
 	glfwTerminate();
@@ -191,9 +148,10 @@ int main() {
 	return 0;
 
 }
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int levelWidth, int levelHeight) {
 
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, levelWidth, levelHeight);
 
-
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	game->OnResize(levelWidth, levelHeight);
 }

@@ -33,11 +33,11 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* fge
 		FragmentShaderCode = fragmentShaderStream.str();
 
 		if (fgeometryShader) {
-			std::ifstream GeometryShaderFile(GeometryShaderCode);
+			std::ifstream GeometryShaderFile(fgeometryShader);
 			std::stringstream GeometryShaderStream;
 
 			GeometryShaderStream << GeometryShaderFile.rdbuf();
-			GeometryShaderCode = GeometryShaderCode.c_str();
+			GeometryShaderCode = GeometryShaderStream.str();
 			GeometryShaderFile.close();
 
 		}
@@ -175,7 +175,7 @@ void Shader::setivec2(const std::string& name, glm::ivec2 value) {
 	glUniform2i(tilmeValueLocation, value.x, value.y);
 }
 
-void Shader::setvec2(const std::string& name, glm::vec2 value)
+void Shader::setVec2(const std::string& name, glm::vec2 value)
 {
 	int tilmeValueLocation = glGetUniformLocation(ID, name.c_str());
 	glUniform2f(tilmeValueLocation, value.x, value.y);
@@ -191,4 +191,9 @@ void Shader::setvec3f(const std::string& name, glm::vec3 value)
 {
 	int tilmeValueLocation = glGetUniformLocation(ID, name.c_str());
 	glUniform3f(tilmeValueLocation, value.x, value.y, value.z);
+}
+
+void Shader::setSampler2D(const std::string& name, int slot)
+{
+	glUniform1i(glGetUniformLocation(this->ID, name.c_str()), slot);
 }

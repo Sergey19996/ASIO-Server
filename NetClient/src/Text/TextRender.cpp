@@ -1,4 +1,4 @@
-#include "TextRender.h"
+﻿#include "TextRender.h"
 #include <iostream>
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -6,125 +6,142 @@
 #include FT_FREETYPE_H
 
 #include "../ResourceManager.h"
-
-
-TextRenderer::TextRenderer(unsigned int width, unsigned int height)
+#include <vector>
+TextRenderer::TextRenderer(unsigned int w, unsigned int h)
 {
-	TextShader = ResourceManager::LoadShader("Assets/Shaders/text_2d_vs.glsl", "Assets/Shaders/text_2d_fs.glsl", nullptr, "text");
-	TextShader.setMat4("projection", glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f), true);
-	TextShader.setInt("text", 0);
+    Shader = ResourceManager::GetShader(ShaderID::TextShader);
+    Shader.use();
+    Shader.setMat4("projection",glm::ortho(0.0f, (float)w, (float)h, 0.0f));
+    Shader.setInt("fontAtlas", 0);
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0); //
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
 
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(TextVertex),
+        nullptr, GL_DYNAMIC_DRAW);
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
+        sizeof(TextVertex), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+        sizeof(TextVertex),
+        (void*)(sizeof(glm::vec2)));
 }
 
-void TextRenderer::Load(std::string font, unsigned int fontSize) {
-
-	Characters.clear();
-
-	FT_Library ft;
-	if (FT_Init_FreeType(&ft))
-		std::cout << "ERROR::FREETYPE: couldn't init fretype library" << std::endl;
-
-	FT_Face face;
-	if (FT_New_Face(ft, font.c_str(), 0, &face))
-		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-	FT_Set_Pixel_Sizes(face, 0, fontSize);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	//preload/compile and store
-	for (GLubyte c = 0; c < 128; c++) {
-
-		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-			std::cout << "ERROR::FREETYPE: failed to load glyph" << std::endl;
-			continue;
-		}
-
-		unsigned int texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D,
-			0,
-			GL_RED,
-			face->glyph->bitmap.width,
-			face->glyph->bitmap.rows,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			face->glyph->bitmap.buffer);
-
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-		Character character = {
-			texture,
-			glm::ivec2(face->glyph->bitmap.width,face->glyph->bitmap.rows),
-			glm::ivec2(face->glyph->bitmap_left,face->glyph->bitmap_top),
-			face->glyph->advance.x
-		};
-		Characters.insert(std::pair<char, Character>(c, character));
-
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	FT_Done_Face(face);
-	FT_Done_FreeType(ft);
-
-
-
+void TextRenderer::Resize(unsigned int w, unsigned int h)
+{
+    Shader.use();
+    Shader.setMat4(
+        "projection",
+        glm::ortho(0.0f, (float)w, (float)h, 0.0f)
+    );
 }
 
-void TextRenderer::RenderText(std::string text, float x, float y, float scale, glm::vec3 color)
+void TextRenderer::SetFont(FontAtlas* font)
 {
-	TextShader.use();
-	TextShader.setvec3f("color", color);
-	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(this->VAO);
+    Font = font;
+}
+
+void TextRenderer::RenderText(const std::string& text,float x, float y,float scale,glm::vec3 color)
+{
+   
+    Shader.use();
+    Shader.setvec3f("color", color);
+   
+    Shader.setInt("fontAtlas", 0); // Убедитесь, что имя uniform в вашем шейдере именно "textSampler"
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Font->TextureID);
+    glBindVertexArray(VAO);
+
+    std::vector<TextVertex> vertices;
+
+   // for (char c : text)
+    for (size_t i = 0; i < text.length(); ) // Убрали char c
+    {
+        uint32_t codepoint = next_utf8(text, i); // Читаем целый символ (даже если он 2 байта)
+
+        const Glyph* g = Font->GetChar(codepoint); // Передаем uint32_t
+        if (!g) continue;
+
+        float baseline = y + Font->Ascent * scale;
 
 
-	std::string::const_iterator c;
-	for (c = text.begin(); c != text.end(); c++) {
-		Character ch = Characters[*c];
-		float xpos = x + ch.Bearing.x * scale;
-		float ypos = y + (this->Characters['H'].Bearing.y - ch.Bearing.y) * scale; // � H bearing y �������� ������� �����(����� ���� ��������) ��� � � � T
 
-		float w = ch.Size.x * scale;
-		float h = ch.Size.y * scale;
+        float xpos = std::round(x + g->Bearing.x * scale);
+        float ypos = std::round(baseline - g->Bearing.y * scale);
 
-		float vertices[6][4] = {
-					{xpos, ypos + h,	 0.0f, 1.0f},
-					{xpos + w, ypos,	 1.0f, 0.0f},
-					{xpos, ypos,		 0.0f, 0.0f},
+        float w = std::round(g->Size.x * scale);
+        float h = std::round(g->Size.y * scale);
 
-					{xpos, ypos + h,	 0.0f, 1.0f},
-					{xpos + w, ypos + h, 1.0f, 1.0f},
-					{xpos + w, ypos ,    1.0f, 0.0f},
-		};
+        vertices.push_back({ {xpos,     ypos},     {g->UVMin.x, g->UVMin.y} });
+        vertices.push_back({ {xpos,     ypos + h}, {g->UVMin.x, g->UVMax.y} });
+        vertices.push_back({ {xpos + w, ypos + h}, {g->UVMax.x, g->UVMax.y} });
 
-		glBindTexture(GL_TEXTURE_2D, ch.TextureId);
+        vertices.push_back({ {xpos,     ypos},     {g->UVMin.x, g->UVMin.y} });
+        vertices.push_back({ {xpos + w, ypos + h}, {g->UVMax.x, g->UVMax.y} });
+        vertices.push_back({ {xpos + w, ypos},     {g->UVMax.x, g->UVMin.y} });
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+        x += (g->Advance >> 6) * scale;
+    }
 
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		x += (ch.Advance >> 6) * scale;
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0,
+        vertices.size() * sizeof(TextVertex),
+        vertices.data());
 
 
-	}
+   
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
+
+uint32_t TextRenderer::next_utf8(const std::string& str, size_t& i)
+{
+    // Берем текущий байт и сразу двигаем индекс i на следующий
+    uint32_t c = (unsigned char)str[i++];
+
+    // Если код меньше 128 (0x80), это обычный английский символ (ASCII).
+    // Он занимает всего 1 байт. Условие if пропустится, и мы просто вернем c.
+    if (c >= 0x80) {
+
+        // Если байт начинается с битов '110' ((c & 0xE0) == 0xC0),
+        // значит перед нами символ из 2-х байтов (например, русская 'А').
+        if ((c & 0xE0) == 0xC0) {
+            // Формула склейки:
+            // 1. Берем полезные биты из первого байта (c & 0x1F) и сдвигаем их влево.
+            // 2. Берем полезные биты из второго байта (str[i++] & 0x3F) и добавляем через ИЛИ.
+            c = ((c & 0x1F) << 6) | (str[i++] & 0x3F);
+        }
+
+        // Если байт начинается с битов '1110' ((c & 0xF0) == 0xE0),
+        // значит это символ из 3-х байтов (например, некоторые спецсимволы).
+        else if ((c & 0xF0) == 0xE0) {
+            // Склеиваем 3 байта в одно число. 
+            // Полезные биты из первого байта сдвигаем уже на 12 позиций.
+            c = ((c & 0x0F) << 12) | ((str[i] & 0x3F) << 6) | (str[i + 1] & 0x3F);
+
+            // Мы использовали i и i+1, поэтому сдвигаем общий индекс строки на 2 вперед.
+            i += 2;
+        }
+    }
+
+    // Возвращаем итоговый код символа (например, для 'А' это будет 1040).
+    return c;
+}
 
 
+float TextRenderer::MeasureTextWidth(const std::string& text, float scale)
+{
+    float width = 0.0f;
+    if (!Font) return 0.0f;
+
+    for (size_t i = 0; i < text.length(); ) {
+        uint32_t codepoint = next_utf8(text, i);
+        const Glyph* ch = Font->GetChar(codepoint);
+        if (ch) width += (ch->Advance >> 6) * scale;
+    }
+    return width;
 }

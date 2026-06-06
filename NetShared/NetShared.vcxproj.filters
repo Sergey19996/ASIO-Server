@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\entities">
+      <UniqueIdentifier>{dd645b0f-bbf7-463a-9dcd-c97337024210}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AI">
+      <UniqueIdentifier>{03e0bdb4-99fc-4a5f-b0c1-907e5ccdf3df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\AI\Companions">
+      <UniqueIdentifier>{666d6a3a-f038-4dd0-91a3-83d3adfdb6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lvlSystem">
+      <UniqueIdentifier>{5732133c-acb9-420d-8576-2d2bdf3b2699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\managers">
+      <UniqueIdentifier>{1df3a452-2d20-4a2d-90cc-286d487474cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PlayerProfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetPlayerProfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileRules.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionSlot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FastNoiseLite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayRules.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\Character.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\Hunter.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\Mage.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\Warrior.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\AIBase.h">
+      <Filter>Header Files\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\MeleeMob.h">
+      <Filter>Header Files\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\RangerMob.h">
+      <Filter>Header Files\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\Companions\CompanionBase.h">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\Companions\WarriorCompanion.h">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\Companions\RangerCompanion.h">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\Companions\PriestCompanion.h">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\CooldownManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\EffectManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\ProgressionManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="managers\SquadManager.h">
+      <Filter>Header Files\managers</Filter>
+    </ClInclude>
+    <ClInclude Include="StringId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="entities\Character.cpp">
+      <Filter>Header Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\Hunter.cpp">
+      <Filter>Header Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\Mage.cpp">
+      <Filter>Header Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\Warrior.cpp">
+      <Filter>Header Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\MeleeMob.cpp">
+      <Filter>Header Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\AIBase.cpp">
+      <Filter>Header Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\RangerMob.cpp">
+      <Filter>Header Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\Companions\CompanionBase.cpp">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\Companions\RangerCompanion.cpp">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\Companions\PriestCompanion.cpp">
+      <Filter>Header Files\AI\Companions</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\EffectManager.cpp">
+      <Filter>Header Files\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\ProgressionManager.cpp">
+      <Filter>Header Files\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="managers\SquadManager.cpp">
+      <Filter>Header Files\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\Companions\WarriorCompanion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

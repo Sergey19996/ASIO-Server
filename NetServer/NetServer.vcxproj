@@ -71,10 +71,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../NetCommon;C:\asio-1.34.2\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../NetCommon;../NetShared;C:\asio-1.34.2\include;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../NetCommon;C:\asio-1.34.2\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../NetCommon;C:\asio-1.34.2\include;../NetShared;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,9 +108,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GAME_SERVER;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,9 +125,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GAME_SERVER;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,9 +140,108 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FrameworkBasics\main.cpp" />
+    <ClCompile Include="..\NetShared\AI\AIBase.cpp" />
+    <ClCompile Include="..\NetShared\AI\Companions\CompanionBase.cpp" />
+    <ClCompile Include="..\NetShared\AI\Companions\PriestCompanion.cpp" />
+    <ClCompile Include="..\NetShared\AI\Companions\RangerCompanion.cpp" />
+    <ClCompile Include="..\NetShared\AI\Companions\WarriorCompanion.cpp" />
+    <ClCompile Include="..\NetShared\AI\MeleeMob.cpp" />
+    <ClCompile Include="..\NetShared\AI\RangerMob.cpp" />
+    <ClCompile Include="..\NetShared\entities\Character.cpp" />
+    <ClCompile Include="..\NetShared\entities\Hunter.cpp" />
+    <ClCompile Include="..\NetShared\entities\Mage.cpp" />
+    <ClCompile Include="..\NetShared\entities\Warrior.cpp" />
+    <ClCompile Include="..\NetShared\managers\EffectManager.cpp" />
+    <ClCompile Include="..\NetShared\managers\ProgressionManager.cpp" />
+    <ClCompile Include="..\NetShared\managers\SquadManager.cpp" />
     <ClCompile Include="gameLevel.cpp" />
     <ClCompile Include="gameLevel.h" />
+    <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="game\entities\CharacterFactory.cpp" />
+    <ClCompile Include="game\spells\AiSpells\ArrowShot.cpp" />
+    <ClCompile Include="game\spells\AiSpells\comands\SpellCommandDefend.cpp" />
+    <ClCompile Include="game\spells\AiSpells\comands\SpellCommandMove.cpp" />
+    <ClCompile Include="game\spells\Hunter\BindArrowSpell.cpp" />
+    <ClCompile Include="game\spells\Hunter\CraftArrowSpell.cpp" />
+    <ClCompile Include="game\spells\Hunter\ReloadQuiver.cpp" />
+    <ClCompile Include="game\spells\Mage\BlastWave.cpp" />
+    <ClCompile Include="game\spells\Hunter\ChainHarvest.cpp" />
+    <ClCompile Include="game\spells\Mage\FireBallSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\FireDash.cpp" />
+    <ClCompile Include="game\spells\Hunter\GhostArrow.cpp" />
+    <ClCompile Include="game\spells\Mage\MagicConservation.cpp" />
+    <ClCompile Include="game\spells\Mage\SwitchSpell.cpp" />
+    <ClCompile Include="game\spells\Hunter\GrappleSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\IceballSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\IceRoots.cpp" />
+    <ClCompile Include="game\spells\Mage\IceShield.cpp" />
+    <ClCompile Include="game\spells\Hunter\InfuseArrow.cpp" />
+    <ClCompile Include="game\spells\AiSpells\MeleeHit.cpp" />
+    <ClCompile Include="game\spells\AiSpells\MeleeHit.h" />
+    <ClCompile Include="game\spells\Warrior\PullHookSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\Resonance Crystal.cpp" />
+    <ClCompile Include="game\spells\Warrior\ShieldBurst.cpp" />
+    <ClCompile Include="game\spells\Warrior\ShieldSpell.cpp" />
+    <ClCompile Include="game\spells\Warrior\ShieldThrowSpell.cpp" />
+    <ClCompile Include="game\spells\Hunter\Shoot.cpp" />
+    <ClCompile Include="game\spells\Warrior\SmashHit.cpp" />
+    <ClCompile Include="game\spells\Spell.cpp" />
+    <ClCompile Include="game\spells\Hunter\StickyBombSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\StygianSpike.cpp" />
+    <ClCompile Include="game\spells\Mage\SunLance.cpp" />
+    <ClCompile Include="game\spells\Mage\SunMarker.cpp" />
+    <ClCompile Include="game\spells\Mage\TeleportSpell.cpp" />
+    <ClCompile Include="game\spells\Mage\WallSpell.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Match.cpp" />
+    <ClCompile Include="ReconnectionSession.cpp" />
+    <ClCompile Include="sqlite3.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DamageContext.h" />
+    <ClInclude Include="game\entities\CharacterFactory.h" />
+    <ClInclude Include="game\spells\AiSpells\ArrowShot.h" />
+    <ClInclude Include="game\spells\AiSpells\comands\SpellCommandDefend.h" />
+    <ClInclude Include="game\spells\AiSpells\comands\SpellCommandMove.h" />
+    <ClInclude Include="game\spells\Hunter\BindArrowSpell.h" />
+    <ClInclude Include="game\spells\Hunter\CraftArrowSpell.h" />
+    <ClInclude Include="game\spells\Hunter\ReloadQuiver.h" />
+    <ClInclude Include="game\spells\Mage\BlastWave.h" />
+    <ClInclude Include="game\spells\Hunter\ChainHarvest.h" />
+    <ClInclude Include="game\spells\Mage\FireDash.h" />
+    <ClInclude Include="game\spells\Hunter\GhostArrow.h" />
+    <ClInclude Include="game\spells\Mage\MagicConservation.h" />
+    <ClInclude Include="game\spells\Mage\SwitchSpell.h" />
+    <ClInclude Include="game\spells\Hunter\GrappleSpell.h" />
+    <ClInclude Include="game\spells\Mage\IceballSpell.h" />
+    <ClInclude Include="game\spells\Mage\IceRoots.h" />
+    <ClInclude Include="game\spells\Mage\IceShield.h" />
+    <ClInclude Include="game\spells\Hunter\InfuseArrow.h" />
+    <ClInclude Include="game\spells\Mage\Resonance Crystal.h" />
+    <ClInclude Include="game\spells\Warrior\PullHookSpell.h" />
+    <ClInclude Include="game\spells\Warrior\ShieldBurst.h" />
+    <ClInclude Include="game\spells\Warrior\ShieldThrowSpell.h" />
+    <ClInclude Include="game\spells\Hunter\Shoot.h" />
+    <ClInclude Include="game\spells\Warrior\ShieldSpell.h" />
+    <ClInclude Include="game\spells\Warrior\SmashHit.h" />
+    <ClInclude Include="game\spells\SpellManager.h" />
+    <ClInclude Include="game\spells\Hunter\StickyBombSpell.h" />
+    <ClInclude Include="game\spells\Mage\StygianSpike.h" />
+    <ClInclude Include="game\spells\Mage\SunLance.h" />
+    <ClInclude Include="game\spells\Mage\SunMarker.h" />
+    <ClInclude Include="game\spells\Mage\TeleportSpell.h" />
+    <ClInclude Include="game\spells\TimedSpell.h" />
+    <ClInclude Include="game\spells\Mage\FireBallSpell.h" />
+    <ClInclude Include="GameServer.h" />
+    <ClInclude Include="game\spells\Spell.h" />
+    <ClInclude Include="game\spells\SpellFactory.h" />
+    <ClInclude Include="game\spells\Mage\WallSpell.h" />
+    <ClInclude Include="game\utils\SpatialCell.h" />
+    <ClInclude Include="game\utils\WorldGrid.h" />
+    <ClInclude Include="Match.h" />
+    <ClInclude Include="MatchState.hpp" />
+    <ClInclude Include="ReconnectionSession.h" />
+    <ClInclude Include="sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

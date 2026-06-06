@@ -1,0 +1,528 @@
+{
+  "characters": {
+    "Mage": {
+      "name": "Mage",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.0 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.0 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 4.0
+            },
+            "attack_action": {
+              "uv": [ 0.75, 0.0 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 4.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9375 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+    "Hunter": {
+      "name": "Hunter",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.125 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.125 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 4.0
+            },
+            "attack_action": {
+              "uv": [ 0.75, 0.125 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 4.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9375 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+    "Warrior": {
+      "name": "Warrior",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.25 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.25 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.75, 0.25 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 1.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9375 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+    "Comp_Warrior": {
+      "name": "companion Warrior",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.375 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.375 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.625, 0.375 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9531 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+    "Comp_Priest": {
+      "name": "companion Priest",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.625 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.625 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.625, 0.625 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9531 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+
+    "Comp_Hunter": {
+      "name": "companion Hunter",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.5 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.5, 0.5 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.625, 0.5 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.9531 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+
+    "Mob_Melee": {
+      "name": "Mob melee",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 1,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.75 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.25, 0.75 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.25, 0.375 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 1.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.96875 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 2,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    },
+
+    "Mob_Range": {
+      "name": "Mob Range",
+      "texture_tag": "Character_atlas",
+      "layers": {
+        "legs": {
+          "rotation_type": "velocity",
+          "size": [ 1.0, 1.0 ],
+          "animations": {
+            "idle": {
+              "uv": [ 0.9375, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 2,
+              "anim_speed": 8.0
+            },
+            "walk": {
+              "uv": [ 0.6875, 0.875 ],
+              "uv_scale": [ 0.0625, 0.0625 ],
+              "frames": 4,
+              "anim_speed": 8.0
+            }
+          }
+        },
+        "head_and_weapons": {
+          "rotation_type": "weapon_lag",
+          "size": [ 2.0, 2.0 ],
+          "animations": {
+            "default": {
+              "uv": [ 0.0, 0.875 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 2,
+              "anim_speed": 8.0
+            },
+            "prepare_action": {
+              "uv": [ 0.25, 0.85 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 1.0
+            },
+            "attack_action": {
+              "uv": [ 0.375, 0.85 ],
+              "uv_scale": [ 0.125, 0.125 ],
+              "frames": 1,
+              "anim_speed": 4.0
+            }
+          }
+        },
+        "eyes": {
+          "rotation_type": "mouse",
+          "size": [ 0.25, 0.25 ],
+          "look_distance": 2.0,
+          "eye_offsets": [
+            [ -8.0, -11.0 ],
+            [ 8.0, -11.0 ]
+          ],
+          "animations": {
+            "default": {
+              "uv": [ 0.6875, 0.96875 ],
+              "uv_scale": [ 0.015, 0.01 ],
+              "frames": 2,
+              "anim_speed": 8.0
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

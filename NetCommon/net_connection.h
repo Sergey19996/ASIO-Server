@@ -99,10 +99,9 @@ namespace olc {
 						{
 							if (!ec)  // success connection
 							{
-								//ReadHeader();
-
-								//First thing sesrver will do is send packet to be validated
-								//o wait for thet and respond
+								// ВОТ ЭТО УБЕРЕТ ЗАДЕРЖКИ TCP
+								asio::ip::tcp::no_delay option(true);
+								m_socket.set_option(option);
 							
 								ReadValidation();
 
